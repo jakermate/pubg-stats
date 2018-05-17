@@ -8,7 +8,9 @@ class App extends Component {
     this.state={
       pc: false,
       xbox: false,
-      search: ""
+      search: "",  // Search string from input.
+      query:"",  // Query to be built and then sent as a .get
+      region:"" // To be set with specific region from li value.
     }
   }
 choosePC = () =>{
@@ -47,8 +49,8 @@ class PlatformSelect extends Component{
   render(){
     return(
         <ul id="platform-list">
-          <li id="pc" onClick={this.props.choosePC}>PC</li>
-          <li id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
+          <li className="list-item" id="pc" onClick={this.props.choosePC}>PC</li>
+          <li className="list-item" id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
         </ul>
     )
   }
@@ -59,15 +61,15 @@ class PCRegion extends Component{
       <div id="PC-region-select">
         <h4>PC Regions</h4>
         <ul id="pc-region-list">
-          <li>Korea</li>
-          <li>Japan</li>
-          <li>North America</li>
-          <li>Europe</li>
-          <li>Russia</li>
-          <li>Oceania</li>
-          <li>Kakao</li>
-          <li>South and Central Americas</li>
-          <li>Asia</li>
+          <li className="list-item" >Korea</li>
+          <li className="list-item" >Japan</li>
+          <li className="list-item" >North America</li>
+          <li className="list-item" >Europe</li>
+          <li className="list-item" >Russia</li>
+          <li className="list-item" >Oceania</li>
+          <li className="list-item" >Kakao</li>
+          <li className="list-item" >South and Central Americas</li>
+          <li className="list-item" >Asia</li>
         </ul>
       </div>
     )
@@ -79,10 +81,10 @@ class XboxRegion extends Component{
       <div id="Xbox-region-select">
         <h4>Xbox Regions</h4>
         <ul id="xbox-region-list">
-          <li>Asia</li>
-          <li>Europe</li>
-          <li>North America</li>
-          <li>Oceania</li>
+          <li value="Asia" >Asia</li>
+          <li value="Europe" >Europe</li>
+          <li value="North America" >North America</li>
+          <li value="Oceania" >Oceania</li>
         </ul>
       </div>
     )
@@ -104,6 +106,18 @@ class Search extends Component{
     )
   }
 }
+class Display extends Component{
+  constructor(props){
+    super();
 
+  }
+  render(){
+    return(
+      <div id="display">
+        <div id="player'name"></div>
+      </div>
+    )
+  }
+}
 
 export default App;

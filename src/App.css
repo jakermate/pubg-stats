@@ -1,3 +1,7 @@
+@font-face{
+  src:url('./headliner.ttf');
+  font-family:'headliner';
+}
 .App {
   text-align: center;
 }
@@ -26,7 +30,21 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
+body{
+  background-color:black;
+  color:white;
+}
 li{
   list-style: none;
+}
+h1{
+  font-size: 40px;
+  font-family: 'headliner';
+  letter-spacing:.5rem;
+  color:yellow;
+}
+#search-button{
+  color:black;
+  background-color:yellow;
+  border-style: none;
 }
