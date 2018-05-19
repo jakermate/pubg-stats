@@ -12,7 +12,9 @@ class App extends Component {
       query:"",  // Query to be built and then sent as a .get
       region:"", // To be set with specific region from li value.
       playerID:"", //Store currently chosed player ID for match search.
-      hasSearched:false
+      hasSearched:false,
+      seasons:{},
+      season:"division.bro.official.2018-02"
     };
     this.regionList={
       'Xbox Asia':'xbox-as',
@@ -35,8 +37,35 @@ class App extends Component {
     this.authorization="Bearer "+this.key;
     this.player1={};
     this.err404="Search Found Nothing (hint: Player Names Are Case Sensitive)";
-    this.playerName="";
+    this.processReq=this.processReq.bind(this);
+    //Grab season list on first mounting of main app component.
+
   }
+
+getSeasons(){
+    console.log('Building query string.');
+    this.seasonString = this.baseURL+'/'+this.state.region+'/seasons';
+    console.log(this.seasonString);
+    fetch(this.seasonString, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': this.authorization,
+        'Accept': 'application/json'
+      })
+    }).then(response=>response.json()).then(data=>console.log(data)).then(this.getStats());
+
+  }
+getStats(){
+  this.statString=this.baseURL+'/'+this.state.region+'/players/'+this.state.playerID+'/seasons/'+this.state.season;
+  console.log('Getting Stats from season');
+  fetch(this.statString, {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': this.authorization,
+      'Accept': 'application/json'
+    })
+  }).then(response=>response.json()).then(data=>console.log(data));
+}
 choosePC = () =>{
   this.setState({region:""});
   this.setState({pc: !this.state.pc});
@@ -60,9 +89,6 @@ updateSearch=(event)=>{
   this.setState({search: event.target.value});
   console.log("State Updated.");
 }
-setPlayerID(id){
-  this.setState({playerID: id});
-}
 getPlayer=(e)=>{
   e.preventDefault();
   console.log("searching");
@@ -76,26 +102,28 @@ getPlayer=(e)=>{
       this.player1 = JSON.parse(req.responseText);
       console.log(this.player1);
       console.log(this.player1.data[0].attributes.name);
-      document.getElementById('player-name').innerHTML=this.player1.data[0].attributes.name;
+      this.processReq();
     }
     if(this.status==404&&this.readyState==4){
       console.log('Player not found.');
     }
-  };
+  }.bind(this);
   req.open('GET',requestString, true);
   req.setRequestHeader('Authorization', this.authorization);
   req.setRequestHeader('Accept',"application/json");
   req.send();
 }
-processReq=()=>{
-//   if(req.status==200 && req.readyState==4){
-//       this.player1 = JSON.parse(req.responseText);
-//       console.log(this.player1);
-//       console.log(this.player1.data[0].attributes.name);
-//     }
-//     if(this.status==404&&this.readyState==4){
-//         console.log('Player not found.');
-//       }
+processReq(){
+  this.playerArray = this.player1.data;
+  this.playerAtt = this.playerArray[0].attributes;
+  this.playerName = this.playerAtt.name;
+  this.setState({playerID: this.playerArray[0].id});
+  console.log(this.state.playerID);
+  console.log(this.playerName);
+  this.playerRel = this.playerArray[0].relationships;
+  this.playerMatches = this.playerRel.matches;
+  console.log(this.playerMatches);
+  this.getSeasons();
 }
 getMatch(id){
 
@@ -117,7 +145,7 @@ call=()=>{ //Makes the call to the API
         {/*Displays search box only when region is selected.*/}
         {this.state.region!=""&& (this.state.xbox || this.state.pc) && <Search updatesearch={this.updateSearch} search={this.state.search} getPlayer={this.getPlayer}/>}
 
-        {this.state.player1!="" && <Display name={this.playerName} />} {/*//Cant pass down object as child.*/}
+        {this.state.playerName!="" && <Display playerName={this.playerName} />}
 
       </div>
     );
@@ -171,8 +199,9 @@ class XboxRegion extends Component{
 }
 
 class Search extends Component{
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
+
   }
   render(){
     return(
@@ -188,13 +217,13 @@ class Search extends Component{
 class Display extends Component{
   constructor(props){
     super();
-
   }
   render(){
     return(
       <div id="display">
-        <div id="player-name"></div>
+        <div id="player-name">{this.props.playerName}</div>
 
+        <Stats />
         <Matchdisplay />
 
       </div>
@@ -204,8 +233,35 @@ class Display extends Component{
 const Matchdisplay = (props) =>{
   return(
     <div id="matches-container">
-      <h2>Recent Matches</h2>
+
     </div>
+  )
+}
+const Stats = (props =>{
+  return(
+    <div id="stats-container">
+    </div>
+  )
+})
+const solos=(props)=>{
+  return(
+      <div id="solos">
+
+      </div>
+  )
+}
+const duos=(props)=>{
+  return(
+      <div id="duos">
+
+      </div>
+  )
+}
+const squads=(props)=>{
+  return(
+      <div id="squads">
+
+      </div>
   )
 }
 
