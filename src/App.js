@@ -17,7 +17,7 @@ class App extends Component {
       searched:{},
       player1:{},
       seasons:{},
-      season:"division.bro.official.2018-02",
+      season:"division.bro.official.2018-05",
       currentSeason:""
     };
     this.regionList={
@@ -46,19 +46,6 @@ class App extends Component {
 
   }
 
-// getStats(){
-//   this.statString=this.baseURL+'/'+this.state.region+'/players/'+this.state.playerID+'/seasons/'+this.state.season;
-//   console.log('Getting Stats from season');
-//   fetch(this.statString, {
-//     method: 'get',
-//     headers: new Headers({
-//       'Authorization': this.authorization,
-//       'Accept': 'application/json'
-//     })
-//   })
-//   .then(response=>response.json())
-//   .then(data=>{console.log(data);this.setState({searched:data})});
-// }
 choosePC = () =>{
   this.setState({region:""});
   this.setState({pc: !this.state.pc});
@@ -132,17 +119,14 @@ componentDidMount(){
       'Authorization': this.authorization,
       'Accept': 'application/json'
     })
-  }).then(response=>response.json()).then(data=>{
-    data.data[data.data.length-1].id;
-  }).then(currentSeason=>{that.setState({currentSeason: currentSeason})});
+  }).then(response=>response.json()).then(data=>console.log(data));
 }
   render() {
-
     return (
       <Router>
         <div className="App">
           <header className="App-header">
-            <h1 id="header-logo">PUBG Stats</h1>
+            <h1 id="header-logo">PUBG BOI</h1>
           </header>
           <h4>Choose Platform and Region</h4>
           <PlatformSelect chooseXbox={this.chooseXbox} choosePC={this.choosePC}/>
@@ -153,7 +137,7 @@ componentDidMount(){
           {this.state.region!=""&& (this.state.xbox || this.state.pc) && <Search updatesearch={this.updateSearch} search={this.state.search} getPlayer={this.getPlayer}/>}
 
 
-          {this.state.playerID!="" &&<User playerInfo={this.player1} region={this.state.region} id={this.state.playerID} season={this.state.season} />}
+          {this.state.playerID!="" &&<User playerInfo={this.player1} region={this.state.region} id={this.state.playerID} season={this.state.season} seasons={this.state.seasons} />}
 
           <Route path="/leaderboards" component={Leaderboards} />
         </div>
@@ -245,7 +229,7 @@ class User extends Component{
     this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
     this.authorization="Bearer "+this.key;
     this.state={
-      // Needs mock data to allow component to render once without data.
+      season:'division.bro.official.2018-05',
       player: {
         data:{
           attributes:{
@@ -285,9 +269,10 @@ class User extends Component{
 
   }
 componentDidMount(){
+
     var that=this;
     this.setState({playerInfo: this.props.playerInfo});
-    this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.props.season;
+    this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.state.season;
     console.log('Getting Stats from season');
     fetch(this.statString, {
       method: 'get',
@@ -300,11 +285,37 @@ componentDidMount(){
     .then(result=>that.setState({player: result}));
 
 }
+changeSeason(e){
+  this.setState({season: e.target.value})
+  console.log("Season changed to"+this.state.season);
+}
   render(){
 
     console.log(this.state.player);
     return(
       <div id="user-page">
+        <div id='options'>
+          <select id="season-select" value={this.state.season} onChange={this.changeSeason.bind(this)}>
+            <option value="division.bro.official.2018-05" >Season 5</option>
+            <option value="division.bro.official.2018-04" >Season 4</option>
+            <option value="division.bro.official.2018-03" >Season 3</option>
+            <option value="division.bro.official.2018-02" >Season 2</option>
+            <option value="division.bro.official.2018-01" >Season 1</option>
+            <option value="division.bro.official.2017-pre9" >Preseason 9</option>
+            <option value="division.bro.official.2017-pre8" >Preseason 8</option>
+            <option value="division.bro.official.2017-pre7" >Preseason 7</option>
+            <option value="division.bro.official.2017-pre6" >Preseason 6</option>
+            <option value="division.bro.official.2017-pre5" >Preseason 5</option>
+            <option value="division.bro.official.2017-pre4" >Preseason 4</option>
+            <option value="division.bro.official.2017-pre3" >Preseason 3</option>
+            <option value="division.bro.official.2017-pre2" >Preseason 2</option>
+            <option value="division.bro.official.2017-pre1" >Preseason 1</option>
+            <option value="division.bro.official.2017-beta" >Beta</option>
+
+          </select>
+        </div>
+
+
         <h2>{this.state.playerInfo.data[0].attributes.name}</h2>
         <p>Total wins: {this.state.player.data.attributes.gameModeStats['solo-fpp'].wins}</p>
       </div>
@@ -335,6 +346,14 @@ class Leaderboards extends Component{
       </div>
     )
   }
+}
+const Season = () => {
+  return(
+    <div id="option">
+      <option value={this.props.season}>{this.props.season}</option>
+    </div>
+
+  )
 }
 const Matchdisplay = (props) =>{
   return(
