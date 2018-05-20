@@ -14,9 +14,11 @@ class App extends Component {
       query:"",  // Query to be built and then sent as a .get
       region:"pc-na", // To be set with specific region from li value.
       playerID:"", //Store currently chosed player ID for match search.
-      searched:false,
+      searched:{},
+      player1:{},
       seasons:{},
-      season:"division.bro.official.2018-02"
+      season:"division.bro.official.2018-02",
+      currentSeason:""
     };
     this.regionList={
       'Xbox Asia':'xbox-as',
@@ -44,30 +46,19 @@ class App extends Component {
 
   }
 
-getSeasons(){
-    console.log('Building query string.');
-    this.seasonString = this.baseURL+'/'+this.state.region+'/seasons';
-    console.log(this.seasonString);
-    fetch(this.seasonString, {
-      method: 'get',
-      headers: new Headers({
-        'Authorization': this.authorization,
-        'Accept': 'application/json'
-      })
-    }).then(response=>response.json()).then(data=>console.log(data)).then(this.getStats());
-
-  }
-getStats(){
-  this.statString=this.baseURL+'/'+this.state.region+'/players/'+this.state.playerID+'/seasons/'+this.state.season;
-  console.log('Getting Stats from season');
-  fetch(this.statString, {
-    method: 'get',
-    headers: new Headers({
-      'Authorization': this.authorization,
-      'Accept': 'application/json'
-    })
-  }).then(response=>response.json()).then(data=>console.log(data)).then(this.setState({searched: true}));
-}
+// getStats(){
+//   this.statString=this.baseURL+'/'+this.state.region+'/players/'+this.state.playerID+'/seasons/'+this.state.season;
+//   console.log('Getting Stats from season');
+//   fetch(this.statString, {
+//     method: 'get',
+//     headers: new Headers({
+//       'Authorization': this.authorization,
+//       'Accept': 'application/json'
+//     })
+//   })
+//   .then(response=>response.json())
+//   .then(data=>{console.log(data);this.setState({searched:data})});
+// }
 choosePC = () =>{
   this.setState({region:""});
   this.setState({pc: !this.state.pc});
@@ -93,6 +84,8 @@ updateSearch=(event)=>{
   console.log("State Updated.");
 }
 getPlayer=(e)=>{
+  this.setState({playerID:''});
+  var that = this;
   e.preventDefault();
   console.log("searching");
   this.setState({hasSearched: true});
@@ -104,6 +97,7 @@ getPlayer=(e)=>{
     if(req.status==200 && req.readyState==4){
       this.player1 = JSON.parse(req.responseText);
       console.log(this.player1);
+      this.setState({player1: this.player1});
       console.log(this.player1.data[0].attributes.name);
       this.processReq();
     }
@@ -126,10 +120,21 @@ processReq(){
   this.playerRel = this.playerArray[0].relationships;
   this.playerMatches = this.playerRel.matches;
   console.log(this.playerMatches);
-  this.getSeasons();
 }
-getMatch(id){
-
+componentDidMount(){
+  var that = this;
+  console.log('Building query string.');
+  this.seasonString = this.baseURL+'/'+this.state.region+'/seasons';
+  console.log(this.seasonString);
+  fetch(this.seasonString, {
+    method: 'get',
+    headers: new Headers({
+      'Authorization': this.authorization,
+      'Accept': 'application/json'
+    })
+  }).then(response=>response.json()).then(data=>{
+    data.data[data.data.length-1].id;
+  }).then(currentSeason=>{that.setState({currentSeason: currentSeason})});
 }
   render() {
 
@@ -147,9 +152,9 @@ getMatch(id){
           {/*Displays search box only when region is selected.*/}
           {this.state.region!=""&& (this.state.xbox || this.state.pc) && <Search updatesearch={this.updateSearch} search={this.state.search} getPlayer={this.getPlayer}/>}
 
-          {this.state.searched && <User searched={this.state.searched} player={this.player1} />}
 
-          <Route path="/user/:id" render={()=><User player={this.player1} />} />
+          {this.state.playerID!="" &&<User playerInfo={this.player1} region={this.state.region} id={this.state.playerID} season={this.state.season} />}
+
           <Route path="/leaderboards" component={Leaderboards} />
         </div>
       </Router>
@@ -234,10 +239,74 @@ class Home extends Component{
   }
 }
 class User extends Component{
+  constructor(props){
+    super(props);
+    this.baseURL="https://api.playbattlegrounds.com/shards";
+    this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
+    this.authorization="Bearer "+this.key;
+    this.state={
+      // Needs mock data to allow component to render once without data.
+      player: {
+        data:{
+          attributes:{
+            gameModeStats:{
+              duo:{
+                wins:0
+              },
+              'duo-fpp':{
+                wins:0
+              },
+              solo:{
+                wins:0
+              },
+              'solo-fpp':{
+                wins:0
+              },
+              squad:{
+                wins:0
+              },
+              'squad-fpp':{
+                wins:0
+              }
+            }
+          }
+        }
+      },
+      playerInfo: {
+        data:[
+            {
+              attributes:{
+                name:''
+            }
+          }
+        ]
+      }
+    }
+
+  }
+componentDidMount(){
+    var that=this;
+    this.setState({playerInfo: this.props.playerInfo});
+    this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.props.season;
+    console.log('Getting Stats from season');
+    fetch(this.statString, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': this.authorization,
+        'Accept': 'application/json'
+      })
+    })
+    .then(response=>response.json())
+    .then(result=>that.setState({player: result}));
+
+}
   render(){
+
+    console.log(this.state.player);
     return(
       <div id="user-page">
-        <h2>{this.props.player.data[0].attributes.name}</h2>
+        <h2>{this.state.playerInfo.data[0].attributes.name}</h2>
+        <p>Total wins: {this.state.player.data.attributes.gameModeStats['solo-fpp'].wins}</p>
       </div>
     )
   }
