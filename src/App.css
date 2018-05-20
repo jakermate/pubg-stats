@@ -49,7 +49,7 @@ h1{
   font-size: 40px;
   font-family: 'headliner';
   letter-spacing:.5rem;
-  color:yellow;
+  color: yellow;
 }
 #search-input{
   box-sizing: border-box;
@@ -74,4 +74,7 @@ h1{
 #search-form{
   height:100%;
   box-sizing: border-box;
+}
+.li-active{
+  background-color:yellow;
 }

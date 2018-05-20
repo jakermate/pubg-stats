@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+// import Routes from './routes';
 
 class App extends Component {
   constructor(){
     super();
     this.state={
-      pc: false,
+      pc: true,
       xbox: false,
       search: "",  // Search string from input.
       query:"",  // Query to be built and then sent as a .get
-      region:"", // To be set with specific region from li value.
+      region:"pc-na", // To be set with specific region from li value.
       playerID:"", //Store currently chosed player ID for match search.
-      hasSearched:false,
+      searched:false,
       seasons:{},
       season:"division.bro.official.2018-02"
     };
@@ -64,7 +66,7 @@ getStats(){
       'Authorization': this.authorization,
       'Accept': 'application/json'
     })
-  }).then(response=>response.json()).then(data=>console.log(data));
+  }).then(response=>response.json()).then(data=>console.log(data)).then(this.setState({searched: true}));
 }
 choosePC = () =>{
   this.setState({region:""});
@@ -81,6 +83,7 @@ chooseXbox = () =>{
 chooseRegion=(event)=>{
   console.log('setting region');
   this.regionKey=event.target.innerHTML;
+  this.remove=document.getElementById(this.state.region);
   console.log(this.regionKey);
   this.setState({region: this.regionList[this.regionKey]});
   console.log(this.state.region + " region selected.");
@@ -128,26 +131,28 @@ processReq(){
 getMatch(id){
 
 }
-call=()=>{ //Makes the call to the API
-
-}
   render() {
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 id="header-logo">PUBG Stats</h1>
-        </header>
-        <h4>Choose Platform and Region</h4>
-        <PlatformSelect chooseXbox={this.chooseXbox} choosePC={this.choosePC}/>
-        {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} />}
-        {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
+      <Router>
+        <div className="App">
+          <header className="App-header">
+            <h1 id="header-logo">PUBG Stats</h1>
+          </header>
+          <h4>Choose Platform and Region</h4>
+          <PlatformSelect chooseXbox={this.chooseXbox} choosePC={this.choosePC}/>
+          {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} active={this.state.region} />}
+          {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
 
-        {/*Displays search box only when region is selected.*/}
-        {this.state.region!=""&& (this.state.xbox || this.state.pc) && <Search updatesearch={this.updateSearch} search={this.state.search} getPlayer={this.getPlayer}/>}
+          {/*Displays search box only when region is selected.*/}
+          {this.state.region!=""&& (this.state.xbox || this.state.pc) && <Search updatesearch={this.updateSearch} search={this.state.search} getPlayer={this.getPlayer}/>}
 
-        {this.state.playerName!="" && <Display playerName={this.playerName} />}
+          {this.state.searched && <User searched={this.state.searched} player={this.player1} />}
 
-      </div>
+          <Route path="/user/:id" render={()=><User player={this.player1} />} />
+          <Route path="/leaderboards" component={Leaderboards} />
+        </div>
+      </Router>
     );
   }
 }
@@ -164,19 +169,23 @@ class PlatformSelect extends Component{
 }
 class PCRegion extends Component{
   render(){
+    this.activeBg = {
+      backgroundColor: 'yellow'
+    }
     return(
       <div id="PC-region-select">
         <h4>PC Regions</h4>
         <ul id="pc-region-list">
-          <li onClick={this.props.chooseRegion} className="list-item" >Korea</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >Japan</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >North America</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >Europe</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >Russia</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >Oceania</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >Kakao</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >South and Central Americas</li>
-          <li onClick={this.props.chooseRegion} className="list-item" >Asia</li>
+          <li id="pc-krjp" onClick={this.props.chooseRegion} className="list-item" >Korea</li>
+          <li id="pc-jp" onClick={this.props.chooseRegion} className="list-item" >Japan</li>
+          <li id="pc-na" onClick={this.props.chooseRegion} className="list-item" >North America</li>
+          <li id="pc-eu" onClick={this.props.chooseRegion} className="list-item" >Europe</li>
+          <li id="pc-ru" onClick={this.props.chooseRegion} className="list-item" >Russia</li>
+          <li id="pc-oc" onClick={this.props.chooseRegion} className="list-item" >Oceania</li>
+          <li id="pc-kakao" onClick={this.props.chooseRegion} className="list-item" >Kakao</li>
+          <li id="pc-sea" onClick={this.props.chooseRegion} className="list-item">South East Asia</li>
+          <li id="pc-sa" onClick={this.props.chooseRegion} className="list-item" >South and Central Americas</li>
+          <li id="pc-as" onClick={this.props.chooseRegion} className="list-item" >Asia</li>
         </ul>
       </div>
     )
@@ -214,6 +223,26 @@ class Search extends Component{
     )
   }
 }
+class Home extends Component{
+  render(){
+    return(
+      <div id="home">
+        <div id="leaderboards">
+        </div>
+      </div>
+    )
+  }
+}
+class User extends Component{
+  render(){
+    return(
+      <div id="user-page">
+        <h2>{this.props.player.data[0].attributes.name}</h2>
+      </div>
+    )
+  }
+}
+
 class Display extends Component{
   constructor(props){
     super();
@@ -226,6 +255,14 @@ class Display extends Component{
         <Stats />
         <Matchdisplay />
 
+      </div>
+    )
+  }
+}
+class Leaderboards extends Component{
+  render(){
+    return(
+      <div id="leaderboards-page">
       </div>
     )
   }
