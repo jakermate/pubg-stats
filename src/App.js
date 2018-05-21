@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
-// import Routes from './routes';
+import Highcharts from 'highcharts';
 
 class App extends Component {
   constructor(){
@@ -18,7 +18,8 @@ class App extends Component {
       player1:{},
       seasons:{},
       season:"division.bro.official.2018-05",
-      currentSeason:""
+      currentSeason:"",
+      playerCount:0
     };
     this.regionList={
       'Xbox Asia':'xbox-as',
@@ -109,6 +110,7 @@ processReq(){
   console.log(this.playerMatches);
 }
 componentDidMount(){
+  // FIND SEASONS
   var that = this;
   console.log('Building query string.');
   this.seasonString = this.baseURL+'/'+this.state.region+'/seasons';
@@ -120,15 +122,28 @@ componentDidMount(){
       'Accept': 'application/json'
     })
   }).then(response=>response.json()).then(data=>console.log(data));
+
+  //FIND PUBG STEAM STATS
+  // fetch('http://api.steampowered.com/ISteamUserStats/GetGlobalStatsForGame/v1/?format=json&appid=578080&count=1&name=[0]',{
+  //   method: 'get',
+  //   headers: new Headers({
+  //     "Content-Type": 'application/json'
+  //   })
+  //   }).then(response=>response.json()).then(data=>console.log(data));
 }
+
   render() {
     return (
       <Router>
         <div className="App">
           <header className="App-header">
-            <h1 id="header-logo">PUBG BOI</h1>
+            <div id="header-cover">
+              <div id="top-accent"></div>
+              <h1 id="header-logo">PUBG BOI</h1>
+              <p id="subtitle">IT'S A NUMBERS GAME</p>
+              <div id="bottom-accent"></div>
+            </div>
           </header>
-          <h4>Choose Platform and Region</h4>
           <PlatformSelect chooseXbox={this.chooseXbox} choosePC={this.choosePC}/>
           {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} active={this.state.region} />}
           {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
@@ -150,8 +165,8 @@ class PlatformSelect extends Component{
   render(){
     return(
         <ul id="platform-list">
-          <li className="list-item" id="pc" onClick={this.props.choosePC}>PC</li>
-          <li className="list-item" id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
+          <li className="platform-item" id="pc" onClick={this.props.choosePC}>PC</li>
+          <li className="platform-item" id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
         </ul>
     )
   }
@@ -163,18 +178,17 @@ class PCRegion extends Component{
     }
     return(
       <div id="PC-region-select">
-        <h4>PC Regions</h4>
         <ul id="pc-region-list">
-          <li id="pc-krjp" onClick={this.props.chooseRegion} className="list-item" >Korea</li>
-          <li id="pc-jp" onClick={this.props.chooseRegion} className="list-item" >Japan</li>
-          <li id="pc-na" onClick={this.props.chooseRegion} className="list-item" >North America</li>
-          <li id="pc-eu" onClick={this.props.chooseRegion} className="list-item" >Europe</li>
-          <li id="pc-ru" onClick={this.props.chooseRegion} className="list-item" >Russia</li>
-          <li id="pc-oc" onClick={this.props.chooseRegion} className="list-item" >Oceania</li>
-          <li id="pc-kakao" onClick={this.props.chooseRegion} className="list-item" >Kakao</li>
-          <li id="pc-sea" onClick={this.props.chooseRegion} className="list-item">South East Asia</li>
-          <li id="pc-sa" onClick={this.props.chooseRegion} className="list-item" >South and Central Americas</li>
-          <li id="pc-as" onClick={this.props.chooseRegion} className="list-item" >Asia</li>
+          <li id="pc-krjp" onClick={this.props.chooseRegion} className="list-item region-li" >Korea</li>
+          <li id="pc-jp" onClick={this.props.chooseRegion} className="list-item region-li" >Japan</li>
+          <li id="pc-na" onClick={this.props.chooseRegion} className="list-item region-li" >North America</li>
+          <li id="pc-eu" onClick={this.props.chooseRegion} className="list-item region-li" >Europe</li>
+          <li id="pc-ru" onClick={this.props.chooseRegion} className="list-item region-li" >Russia</li>
+          <li id="pc-oc" onClick={this.props.chooseRegion} className="list-item region-li" >Oceania</li>
+          <li id="pc-kakao" onClick={this.props.chooseRegion} className="list-item region-li" >Kakao</li>
+          <li id="pc-sea" onClick={this.props.chooseRegion} className="list-item region-li">South East Asia</li>
+          <li id="pc-sa" onClick={this.props.chooseRegion} className="list-item region-li" >South and Central Americas</li>
+          <li id="pc-as" onClick={this.props.chooseRegion} className="list-item region-li" >Asia</li>
         </ul>
       </div>
     )
@@ -184,12 +198,11 @@ class XboxRegion extends Component{
   render(){
     return(
       <div id="Xbox-region-select">
-        <h4>Xbox Regions</h4>
         <ul id="xbox-region-list">
-          <li onClick={this.props.chooseRegion} value="Asia" >Asia</li>
-          <li onClick={this.props.chooseRegion} value="Europe" >Europe</li>
-          <li onClick={this.props.chooseRegion} value="North America" >North America</li>
-          <li onClick={this.props.chooseRegion} value="Oceania" >Oceania</li>
+          <li className="region-li" onClick={this.props.chooseRegion} value="Asia" >Asia</li>
+          <li className="region-li" onClick={this.props.chooseRegion} value="Europe" >Europe</li>
+          <li className="region-li" onClick={this.props.chooseRegion} value="North America" >North America</li>
+          <li className="region-li" onClick={this.props.chooseRegion} value="Oceania" >Oceania</li>
         </ul>
       </div>
     )
@@ -206,7 +219,7 @@ class Search extends Component{
       <div id="search-container">
         <form id="search-form" action="">
           <input id="search-input" type="text" placeholder="Player Name" value={this.props.search} onChange={this.props.updatesearch}></input>
-          <button id="search-button" action="" onClick={this.props.getPlayer}>SEARCH</button>
+          <button id="search-button" action="" onClick={this.props.getPlayer}>GO</button>
         </form>
       </div>
     )
@@ -229,28 +242,35 @@ class User extends Component{
     this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
     this.authorization="Bearer "+this.key;
     this.state={
+      fpp:true,
       season:'division.bro.official.2018-05',
       player: {
         data:{
           attributes:{
             gameModeStats:{
-              duo:{
-                wins:0
+              'duo':{
+                wins:0,
+                top10s:0
               },
               'duo-fpp':{
-                wins:0
+                wins:0,
+                top10s:0
               },
-              solo:{
-                wins:0
+              'solo':{
+                wins:0,
+                top10s:0
               },
               'solo-fpp':{
-                wins:0
+                wins:0,
+                top10s:0
               },
-              squad:{
-                wins:0
+              'squad':{
+                wins:0,
+                top10s:0
               },
               'squad-fpp':{
-                wins:0
+                wins:0,
+                top10s:0
               }
             }
           }
@@ -284,14 +304,17 @@ componentDidMount(){
     .then(response=>response.json())
     .then(result=>that.setState({player: result}));
 
+
 }
 changeSeason(e){
   this.setState({season: e.target.value})
   console.log("Season changed to"+this.state.season);
 }
+changeFpp(){
+  this.setState({fpp: !this.state.fpp});
+}
   render(){
 
-    console.log(this.state.player);
     return(
       <div id="user-page">
         <div id='options'>
@@ -313,11 +336,25 @@ changeSeason(e){
             <option value="division.bro.official.2017-beta" >Beta</option>
 
           </select>
+          <div id="fpp-select" onClick={this.changeFpp.bind(this)}>FPP</div>
         </div>
 
 
         <h2>{this.state.playerInfo.data[0].attributes.name}</h2>
-        <p>Total wins: {this.state.player.data.attributes.gameModeStats['solo-fpp'].wins}</p>
+        <p> {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} Games Played</p>
+        <p>{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} Wins</p>
+
+        <div id="total-wins-chart"></div>
+
+        <div id="modes-container">
+          {this.state.fpp && <Solosfpp data={this.state.player.data.attributes.gameModeStats['solo-fpp']} />}
+          {!this.state.fpp && <Solos data={this.state.player.data.attributes.gameModeStats['solo']} />}
+          {this.state.fpp && <Duosfpp data={this.state.player.data.attributes.gameModeStats['duo-fpp']} />}
+          {!this.state.fpp && <Duos data={this.state.player.data.attributes.gameModeStats['duo']} />}
+          {this.state.fpp && <Squadsfpp data={this.state.player.data.attributes.gameModeStats['squad-fpp']} />}
+          {!this.state.fpp && <Squads data={this.state.player.data.attributes.gameModeStats['squad']} />}
+        </div>
+
       </div>
     )
   }
@@ -332,7 +369,7 @@ class Display extends Component{
       <div id="display">
         <div id="player-name">{this.props.playerName}</div>
 
-        <Stats />
+
         <Matchdisplay />
 
       </div>
@@ -355,6 +392,152 @@ const Season = () => {
 
   )
 }
+class Solos extends Component{
+  constructor(){
+    super();
+    this.state={
+      data: {
+        wins:0,
+        top10s:0
+      }
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({data: newprops.data});
+  }
+  render(){
+    return(
+        <div id="solos" className="mode">
+          <div className="section-header">
+            <h4>Solo</h4>
+          </div>
+          <Stats data={this.state.data} />
+        </div>
+    )
+  }
+
+}
+class Duos extends Component{
+  constructor(){
+    super();
+    this.state={
+      data: {
+        wins:0,
+        top10s:0
+      }
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({data: newprops.data});
+  }
+  render(){
+    return(
+        <div id="duos" className="mode">
+          <div className="section-header">
+            <h4>Duos</h4>
+          </div>
+          <Stats data={this.state.data} />
+        </div>
+    )
+  }
+}
+class Squads extends Component{
+  constructor(){
+    super();
+    this.state={
+      data: {
+        wins:0,
+        top10s:0
+      }
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({data: newprops.data});
+  }
+  render(){
+    return(
+        <div id="squads" className="mode">
+          <div className="section-header">
+            <h4>Squads</h4>
+          </div>
+          <Stats data={this.state.data} />
+        </div>
+    )
+  }
+}
+class Solosfpp extends Component{
+  constructor(){
+    super();
+    this.state={
+      data: {
+        wins:0,
+        top10s:0
+      }
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({data: newprops.data});
+  }
+  render(){
+    return(
+        <div id="solosfpp" className="mode">
+          <div className="section-header">
+            <h4>Solo FPP</h4>
+          </div>
+        <Stats data={this.state.data} />
+        </div>
+    )
+  }
+}
+class Duosfpp extends Component{
+  constructor(){
+    super();
+    this.state={
+      data: {
+        wins:0,
+        top10s:0
+      }
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({data: newprops.data});
+  }
+  render(){
+    return(
+        <div id="duosfpp" className="mode">
+          <div className="section-header">
+            <h4>Duos FPP</h4>
+          </div>
+          <Stats data={this.state.data} />
+        </div>
+    )
+  }
+}
+class Squadsfpp extends Component{
+  constructor(){
+    super();
+    this.state={
+      data: {
+        wins:0,
+        top10s:0
+      }
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({data: newprops.data});
+  }
+  render(){
+    return(
+        <div id="squadsfpp" className="mode">
+          <div className="section-header">
+            <h4>Squads FPP</h4>
+          </div>
+        <Stats data={this.state.data} />
+        </div>
+    )
+  }
+}
+
 const Matchdisplay = (props) =>{
   return(
     <div id="matches-container">
@@ -362,32 +545,33 @@ const Matchdisplay = (props) =>{
     </div>
   )
 }
-const Stats = (props =>{
-  return(
-    <div id="stats-container">
-    </div>
-  )
-})
-const solos=(props)=>{
-  return(
-      <div id="solos">
-
-      </div>
-  )
+class Stats extends Component{
+  constructor(){
+    super();
+    this.state={
+      data:{
+        wins: 0,
+        top10s: 0
+      }
+    }
+  }
+  componentWillReceiveProps(nextProps){
+         this.setState({data:nextProps.data});
 }
-const duos=(props)=>{
-  return(
-      <div id="duos">
 
+  render(){
+    console.log(this.state.data);
+    return(
+      <div >
+      <div className="stats-container">
+        <ul className="stat-list">
+          <li>Wins: {this.state.data.wins}</li>
+          <li>Top Ten: {this.state.data.top10s}</li>
+        </ul>
       </div>
-  )
-}
-const squads=(props)=>{
-  return(
-      <div id="squads">
-
       </div>
-  )
+    )
+  }
 }
 
 export default App;

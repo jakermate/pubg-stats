@@ -2,19 +2,27 @@
   src:url('./headliner.ttf');
   font-family:'headliner';
 }
+html{
+  font-size:16px;
+}
+body{
+  background-color:#222;
+  color:white;
+}
 .App {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
+/* HEADER */
 .App-header {
-  background-color: #222;
-  padding: 20px;
+  background-image:url('./img/map.png');
+  background-position: center;
+  background-size: 150%;
+  background-color: rgb(50,50,50);
   color: white;
+}
+#header-cover{
+  background-color: rgba(50,50,50,.7);
 }
 
 .App-title {
@@ -25,14 +33,21 @@
   font-size: large;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+#top-accent{
+  background-color: rgb(255,133,0);
+  min-height:1.5rem;
 }
-body{
-  background-color:#222;
-  color:white;
+#bottom-accent{
+  background-color: rgb(255,133,0);
+  min-height:.5rem;
 }
+#subtitle{
+  font-size: .8rem;
+  margin-top:0;
+  color:yellow;
+}
+
+
 ul{
   padding:0;
   margin:0;
@@ -45,11 +60,19 @@ ul{
 li{
   list-style: none;
 }
+.region-li{
+  padding:.5rem;
+}
+.platform-item{
+  padding:.5rem;
+}
 h1{
-  font-size: 40px;
+  font-size: 5rem;
   font-family: 'headliner';
-  letter-spacing:.5rem;
+  font-weight: 400;
+  letter-spacing:;
   color: yellow;
+  margin:0;
 }
 #search-input{
   box-sizing: border-box;
@@ -67,7 +90,7 @@ h1{
   margin:0;
 }
 #search-container{
-  margin-top: 2rem;
+  margin: 1rem 0;
   height:2rem;
   box-sizing: border-box;
 }
@@ -77,4 +100,33 @@ h1{
 }
 .li-active{
   background-color:yellow;
+}
+
+/* Game Mode Stats */
+.mode{
+  width:100%,auto;
+  box-sizing: border-box;
+}
+.section-header{
+  background-color: grey;
+  color:white;
+  padding:.1rem;
+}
+.stats-container{
+  background-color: rgb(157,157,157);
+  padding: 1rem;
+}
+h4{
+  margin:.5rem;
+  text-align: left;
+}
+#header-logo{
+  margin-top:.5rem;
+}
+
+
+/* CHARTS */
+#total-wins-chart{
+  width:100%;
+  max-height: 5rem;
 }
