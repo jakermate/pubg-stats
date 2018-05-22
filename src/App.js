@@ -139,6 +139,13 @@ componentDidMount(){
           <header className="App-header">
             <div id="header-cover">
               <div id="top-accent"></div>
+              <div id="nav">
+                <ul id="nav-links">
+                  <li className="nav-link nav-active" id="home-link">Home</li>
+                  <li className="nav-link" id="compare-link">Compare</li>
+                  <li className="nav-link" id="top-link">Top Players</li>
+                </ul>
+              </div>
               <h1 id="header-logo">PUBG BOI</h1>
               <p id="subtitle">IT'S A NUMBERS GAME</p>
               <div id="bottom-accent"></div>
@@ -250,27 +257,189 @@ class User extends Component{
             gameModeStats:{
               'duo':{
                 wins:0,
-                top10s:0
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
               },
               'duo-fpp':{
                 wins:0,
-                top10s:0
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
               },
               'solo':{
                 wins:0,
-                top10s:0
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
               },
               'solo-fpp':{
                 wins:0,
-                top10s:0
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
               },
               'squad':{
                 wins:0,
-                top10s:0
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
               },
               'squad-fpp':{
                 wins:0,
-                top10s:0
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
               }
             }
           }
@@ -302,7 +471,7 @@ componentDidMount(){
       })
     })
     .then(response=>response.json())
-    .then(result=>that.setState({player: result}));
+    .then(result=>that.setState({player: result})).catch(error=>console.log(error));
 
 
 }
@@ -398,7 +567,34 @@ class Solos extends Component{
     this.state={
       data: {
         wins:0,
-        top10s:0
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
       }
     }
   }
@@ -423,7 +619,34 @@ class Duos extends Component{
     this.state={
       data: {
         wins:0,
-        top10s:0
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
       }
     }
   }
@@ -447,7 +670,34 @@ class Squads extends Component{
     this.state={
       data: {
         wins:0,
-        top10s:0
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
       }
     }
   }
@@ -471,7 +721,34 @@ class Solosfpp extends Component{
     this.state={
       data: {
         wins:0,
-        top10s:0
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
       }
     }
   }
@@ -495,7 +772,34 @@ class Duosfpp extends Component{
     this.state={
       data: {
         wins:0,
-        top10s:0
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
       }
     }
   }
@@ -519,7 +823,35 @@ class Squadsfpp extends Component{
     this.state={
       data: {
         wins:0,
-        top10s:0
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
+
       }
     }
   }
@@ -551,7 +883,34 @@ class Stats extends Component{
     this.state={
       data:{
         wins: 0,
-        top10s: 0
+        top10s: 0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
       }
     }
   }
@@ -567,8 +926,35 @@ class Stats extends Component{
         <ul className="stat-list">
           <li>Wins: {this.state.data.wins}</li>
           <li>Top Ten: {this.state.data.top10s}</li>
+          <li>KRD: {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}</li>
         </ul>
       </div>
+      </div>
+    )
+  }
+}
+
+class Compare extends Component{
+  constructor(){
+    super();
+    this.state={
+      player1:{},
+      player2:{}
+    }
+  }
+
+  render(){
+    return(
+      <div id="compare-page">
+
+        <div id="compare-container">
+          <div id="player1">
+
+          </div>
+          <div id="player2">
+
+          </div>
+        </div>
       </div>
     )
   }
