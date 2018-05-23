@@ -38,7 +38,7 @@ class App extends Component {
       'Asia':'pc-as'
     };
     this.baseURL="https://api.playbattlegrounds.com/shards";
-    this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
+    this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjOGM1YjNhMC0zZmY4LTAxMzYtNTZkMC0zMTI2NjQzMDhjNzEiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI2OTk4NjQ5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MjV9.N83L9f6o00ERumw9IQqWJvWocBJA_JCYFQJQtQJc5aA";
     this.authorization="Bearer "+this.key;
     this.player1={};
     this.err404="Search Found Nothing (hint: Player Names Are Case Sensitive)";
@@ -109,28 +109,6 @@ processReq(){
   this.playerMatches = this.playerRel.matches;
   console.log(this.playerMatches);
 }
-componentDidMount(){
-  // FIND SEASONS
-  var that = this;
-  console.log('Building query string.');
-  this.seasonString = this.baseURL+'/'+this.state.region+'/seasons';
-  console.log(this.seasonString);
-  fetch(this.seasonString, {
-    method: 'get',
-    headers: new Headers({
-      'Authorization': this.authorization,
-      'Accept': 'application/json'
-    })
-  }).then(response=>response.json()).then(data=>console.log(data));
-
-  //FIND PUBG STEAM STATS
-  // fetch('http://api.steampowered.com/ISteamUserStats/GetGlobalStatsForGame/v1/?format=json&appid=578080&count=1&name=[0]',{
-  //   method: 'get',
-  //   headers: new Headers({
-  //     "Content-Type": 'application/json'
-  //   })
-  //   }).then(response=>response.json()).then(data=>console.log(data));
-}
 
   render() {
     return (
@@ -142,7 +120,7 @@ componentDidMount(){
               <div id="nav">
                 <ul id="nav-links">
                   <li className="nav-link nav-active" id="home-link">Home</li>
-                  <li className="nav-link" id="compare-link">Compare</li>
+                  <li className="nav-link" id="compare-link">Side by Side</li>
                   <li className="nav-link" id="top-link">Top Players</li>
                 </ul>
               </div>
@@ -510,8 +488,8 @@ changeFpp(){
 
 
         <h2>{this.state.playerInfo.data[0].attributes.name}</h2>
-        <p> {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} Games Played</p>
-        <p>{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} Wins</p>
+        <p>
+        {this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} / {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} Games Won</p>
 
         <div id="total-wins-chart"></div>
 
@@ -604,7 +582,7 @@ class Solos extends Component{
   render(){
     return(
         <div id="solos" className="mode">
-          <div className="section-header">
+          <div className="section-header bg-orange">
             <h4>Solo</h4>
           </div>
           <Stats data={this.state.data} />
@@ -656,7 +634,7 @@ class Duos extends Component{
   render(){
     return(
         <div id="duos" className="mode">
-          <div className="section-header">
+          <div className="section-header bg-green">
             <h4>Duos</h4>
           </div>
           <Stats data={this.state.data} />
@@ -707,7 +685,7 @@ class Squads extends Component{
   render(){
     return(
         <div id="squads" className="mode">
-          <div className="section-header">
+          <div className="section-header bg-purple">
             <h4>Squads</h4>
           </div>
           <Stats data={this.state.data} />
@@ -758,7 +736,7 @@ class Solosfpp extends Component{
   render(){
     return(
         <div id="solosfpp" className="mode">
-          <div className="section-header">
+          <div className="section-header bg-orange">
             <h4>Solo FPP</h4>
           </div>
         <Stats data={this.state.data} />
@@ -809,7 +787,7 @@ class Duosfpp extends Component{
   render(){
     return(
         <div id="duosfpp" className="mode">
-          <div className="section-header">
+          <div className="section-header bg-green">
             <h4>Duos FPP</h4>
           </div>
           <Stats data={this.state.data} />
@@ -861,7 +839,7 @@ class Squadsfpp extends Component{
   render(){
     return(
         <div id="squadsfpp" className="mode">
-          <div className="section-header">
+          <div className="section-header bg-purple">
             <h4>Squads FPP</h4>
           </div>
         <Stats data={this.state.data} />
@@ -938,11 +916,73 @@ class Compare extends Component{
   constructor(){
     super();
     this.state={
-      player1:{},
-      player2:{}
+      player1:{
+        wins:0,
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
+      },
+      player2:{
+        wins:0,
+        top10s:0,
+        assists:0,
+        dBNOs:0,
+        dailyKills:0,
+        damageDealt:0,
+        days:0,
+        headshotKills:0,
+        heals:0,
+        killPoints:0,
+        kills:0,
+        longestKill:0,
+        longestTimeSurvived:0,
+        losses:0,
+        maxKillStreaks:0,
+        mostSurvivedTime:0,
+        revives:0,
+        rideDistance:0,
+        roadKills:0,
+        roundMostKills:0,
+        roundsPlayed:0,
+        suicides:0,
+        teamKills:0,
+        timeSurvived:0,
+        vehicleDestroys:0,
+        walkDistance:0,
+        weaponsAcquired:0,
+        weeklyKills:0,
+        winPoints:0
+      }
     }
   }
+componentWillReceiveProps(newProps){ //To update state data when api call passes down data.
 
+}
   render(){
     return(
       <div id="compare-page">

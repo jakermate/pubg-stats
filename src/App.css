@@ -140,8 +140,7 @@ h1{
   box-sizing: border-box;
 }
 .section-header{
-  background-color: grey;
-  color:white;
+  color:black;
   padding:.1rem;
 }
 .stats-container{
