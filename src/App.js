@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
-import Highcharts from 'highcharts';
+import {Doughtnut} from 'react-chartjs-2';
 
 class App extends Component {
   constructor(){
@@ -516,9 +516,6 @@ class Display extends Component{
       <div id="display">
         <div id="player-name">{this.props.playerName}</div>
 
-
-        <Matchdisplay />
-
       </div>
     )
   }
@@ -848,13 +845,25 @@ class Squadsfpp extends Component{
   }
 }
 
-const Matchdisplay = (props) =>{
-  return(
-    <div id="matches-container">
+class Matches extends Component{
+  constructor(){
+    super();
+    this.state={
+      matches:[]
+    }
+  }
+  render(){
+    return(
+      <div id="matches-container">
+        <ul id="match-list">
 
-    </div>
-  )
+        </ul>
+      </div>
+    )
+  }
+
 }
+
 class Stats extends Component{
   constructor(){
     super();
@@ -894,6 +903,7 @@ class Stats extends Component{
   }
   componentWillReceiveProps(nextProps){
          this.setState({data:nextProps.data});
+
 }
 
   render(){
@@ -904,8 +914,45 @@ class Stats extends Component{
         <ul className="stat-list">
           <li>Wins: {this.state.data.wins}</li>
           <li>Top Ten: {this.state.data.top10s}</li>
-          <li>KRD: {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}</li>
         </ul>
+        <div className="stat-grid">
+          <div className="gird-win-percent">%</div>
+          <div className="grid-kdr">KRD: {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}
+            <div id="kdr-chart"></div>
+          </div>
+          <div className="grid-top-ten">
+            <div id="top-ten-total" className="stat-total">{this.state.data.top10s}</div>
+            <div id="top-ten-subtitle">Top 10s</div>
+          </div>
+          <div className="grid-kill-per-game">
+            Kills/Game
+          </div>
+          <div className="grid-headshots">
+          <div id="headshots-total" className="stat-total"></div>
+            <div id="headshots-subtitle">% of Kills as Headshots</div>
+            <div id="headshots-graphic"></div>
+          </div>
+          <div className="grid-max-streak">
+            <div id="kill-streak-total" className="stat-total">{this.state.data.roundMostKills}</div>
+            <div id="kill-streak-subtitle">Longest Kill Streak</div>
+            <div id="kill-streak-graphic"></div>
+          </div>
+          <div className="grid-longest-kill">
+            <div id="longest-kill-total" className="stat-total">{this.state.data.longestKill.toFixed(1)} m.</div>
+            <div id="longest-kill-subtitle">Farthest Distance Kill</div>
+            <div id="longest-kill-graphic"></div>
+          </div>
+          <div className="grid-damage-per-round">
+            <div id="avg-damage-total" className="stat-total"></div>
+            <div id="avg-damage-subtitle">Average Damage / Round</div>
+            <div id="avg-damage-graphic"></div>
+          </div>
+          <div className="grid-time-survived">
+            <div id="survived-time-total" className="stat-total"></div>
+            <div id="survived-time-subtitle">Average Survival Time</div>
+            <div id="survived-time-graphic"></div>
+          </div>
+        </div>
       </div>
       </div>
     )
