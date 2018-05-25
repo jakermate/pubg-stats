@@ -141,10 +141,29 @@ processReq(){
 
           {this.state.playerID!="" &&<User playerInfo={this.player1} region={this.state.region} id={this.state.playerID} season={this.state.season} seasons={this.state.seasons} />}
 
-          <Route path="/leaderboards" component={Leaderboards} />
+
+          {/*
+            <div id="router">
+            <Route path="/" exact component={home} />
+            <Route path="/leaderboards" component={Leaderboards} />
+            <Route path="/compare" component={Compare} />
+            <Route path="/user/:id" component={User} />
+            <Route component={Notfound} />
+            </div>
+          */}
         </div>
       </Router>
     );
+  }
+}
+class Home extends Component{
+  render(){
+    return(
+      <div id="home">
+        <div id="leaderboards">
+        </div>
+      </div>
+    )
   }
 }
 
@@ -212,16 +231,7 @@ class Search extends Component{
     )
   }
 }
-class Home extends Component{
-  render(){
-    return(
-      <div id="home">
-        <div id="leaderboards">
-        </div>
-      </div>
-    )
-  }
-}
+
 class User extends Component{
   constructor(props){
     super(props);
@@ -1089,6 +1099,16 @@ class Footer extends Component{
           <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
           <div>Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
         </div>
+      </div>
+    )
+  }
+}
+class Notfound extends Component{
+  render(){
+    return(
+      <div id="error-page">
+        <h1>PAGE NOT FOUND</h1>
+        <Link to="/">PUBG BOI Home</Link>
       </div>
     )
   }
