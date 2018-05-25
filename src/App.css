@@ -9,19 +9,16 @@ body{
   background-color:#222;
   color:white;
 }
-.App {
-  text-align: center;
-}
 
 /* COLORS */
 .bg-orange{
-  background-color: #ff8500;
+  background-color: #ffc485;
 }
 .bg-purple{
-  background-color: #ff00f2;
+  background-color: #ff8af9;
 }
 .bg-green{
-  background-color: #00ff15;
+  background-color: #87ff91;
 }
 
 /* HEADER */
@@ -31,6 +28,7 @@ body{
   background-size: 150%;
   background-color: rgb(50,50,50);
   color: white;
+  text-align: center;
 }
 #header-cover{
   background-color: rgba(50,50,50,.7);
@@ -84,6 +82,20 @@ ul{
   justify-content: space-around;
   flex-wrap: wrap;
 }
+#pc-region-list{
+  font-size: 1rem;
+  color:rgb(170, 170, 170);
+  background-color:rgb(80, 80, 80);
+  font-weight:bold;
+  padding:.3rem;
+}
+#xbox-region-list{
+  font-size: 1rem;
+  color:rgb(170, 170, 170);
+  background-color:rgb(80, 80, 80);
+  font-weight:bold;
+  padding:.3rem;
+}
 li{
   list-style: none;
 }
@@ -106,10 +118,15 @@ h1{
 }
 #search-input{
   box-sizing: border-box;
-  border: none;
+  border: 3px solid rgb(153, 153, 153);
+  background-color:rgb(255, 255, 255);
   height:100%;
-  padding:.3rem;
+  padding-top:.3rem;
+  padding-bottom:.3rem;
+  padding-left:.8rem;
   width:60%;
+  font-size: 1rem;
+  font-weight:bold;
 }
 #search-button{
   color:black;
@@ -134,14 +151,80 @@ h1{
   background-color:yellow;
 }
 
+/* USER */
+#user-page{
+  box-sizing: border-box;
+  overflow:auto;
+}
+#user-info{
+  background-color:rgb(124, 124, 124);
+  box-sizing: border-box;
+  overflow: auto;
+}
+.avatar{
+  height:2rem;
+  width:2rem;
+}
+#avatar-holder{
+  height:2rem;
+  width:2rem;
+}
+#name-container{
+  overflow: auto;
+  padding-top:.5rem;
+}
+#player-name{
+  font-family: "Righteous";
+  box-sizing:border-box;
+  text-align: left;
+  margin-top:1rem;
+  margin-left:1rem;
+  font-size: 3rem;
+  letter-spacing: -.1rem;
+  font-weight:400;
+}
+#options{
+  margin-left:1rem;
+}
+#season-select{
+  border: 2px solid rgb(139, 139, 139);
+  padding:.3rem;
+  font-size: 1rem;
+  background-color: rgb(68, 68, 68);
+  color:rgb(159, 159, 159);
+  font-weight: bold;
+}
+#player-region{
+  display:inline-block;
+  color:rgb(80, 80, 80)
+}
+#overview{
+  margin-left:1rem;
+}
+
 /* Game Mode Stats */
+#wins{
+  overflow:auto;
+}
+.gold-medal{
+  height:1rem;
+  width:1rem;
+}
+.solo-icon{
+  background-image: url('./img/avatar.svg');
+  width:20px;
+  height:20px;
+  background-size: 20px 20px;
+  display: inline-block;
+  margin-right:.4rem;
+}
 .mode{
   width:100%,auto;
   box-sizing: border-box;
 }
 .section-header{
   color:black;
-  padding:.1rem;
+  padding:.7rem 1.4rem;
 }
 .stats-container{
   background-color: rgb(157,157,157);
@@ -156,7 +239,7 @@ h4{
 }
 .stat-grid{
   display:grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns:1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
 .grid-kdr{
@@ -165,6 +248,14 @@ h4{
 .stat-total{
   font-weight:bold;
   font-size: 2rem;
+}
+.stat-subtitle{
+  color:rgb(208, 208, 208)
+}
+.fpp-bold{
+  display:inline-block;
+  transform:rotate(-90deg);
+  font-weight: bold;
 }
 
 
