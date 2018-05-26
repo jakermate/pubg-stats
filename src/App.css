@@ -30,8 +30,18 @@ body{
   color: white;
   text-align: center;
 }
+#statboi-img-container{
+  max-width: 4rem;
+  max-height: 4rem;
+  margin-right:0;
+  box-sizing: border-box;
+}
+#statboi-img{
+  width:100%;
+  height:100%;
+}
 #header-cover{
-  background-color: rgba(50,50,50,.7);
+  background-color: rgba(62, 117, 117, 0.32);
 }
 
 .App-title {
@@ -43,17 +53,22 @@ body{
 }
 
 #top-accent{
-  background-color: rgb(255,133,0);
+  background-color: rgb(46, 46, 46);
   min-height:.5rem;
+  padding:.8rem;
+  display:flex;
+  justify-content: space-between;
+
 }
 #bottom-accent{
-  background-color: rgb(164, 164, 164);
-  min-height:1rem;
+  background-color: rgb(46, 46, 46);
+  min-height:2rem;
 }
 #subtitle{
   font-size: .8rem;
   margin-top:0;
   color:yellow;
+  text-shadow: 2px 2px 5px black;
 }
 
 /* NAV */
@@ -61,6 +76,7 @@ body{
   background-color: rgba(17, 17, 17, 0.4);
   padding: .5rem 0;
   font-size: .8rem;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.43);
 }
 #nav-links{
   display:flex;
@@ -104,6 +120,7 @@ li{
 }
 .platform-item{
   padding:.5rem;
+  font-weight: bold;
 }
 .selected{
   background-color: yellow;
@@ -146,6 +163,9 @@ h1{
 #search-form{
   height:100%;
   box-sizing: border-box;
+}
+input::placeholder{
+  color:rgb(194, 194, 194)
 }
 .li-active{
   background-color:yellow;
@@ -205,6 +225,7 @@ h1{
   justify-content: space-around;
   font-size: 1.3rem;
   font-weight: bold;
+  margin-bottom:.5rem;
 }
 #overview{
   padding-left:1rem;
@@ -224,10 +245,12 @@ h1{
   justify-content:space-around;
   align-items:flex-start;
   flex-wrap: wrap;
+
 }
 .overview-stat-container{
   width:50%;
   text-align: center;
+  margin-top:3rem;
 }
 .stat-margin{
   margin-top:.3rem;
@@ -245,7 +268,7 @@ h1{
   overflow: auto;
   max-width:100%;
   max-height:100%;
-
+  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.64));
 }
 .overview-stat{
   font-family: "Righteous",cursive;
@@ -258,6 +281,7 @@ h1{
 
 #boxing-gloves{
   height:8rem;
+  filter:drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.64));
 }
 .solo-icon{
   background-image: url('./img/avatar.svg');
@@ -320,6 +344,7 @@ h4{
   font-weight:bold;
   font-style: italic;
   color:black;
+  text-shadow:2px 2px rgba(255, 255, 255, 0.55);
 }
 .rounds-played{
   font-family: "Righteous",cursive;
@@ -339,6 +364,30 @@ h4{
   width:100%;
   max-height: 5rem;
 }
-#kdr-chart{
-  background-color:none;
+#chart-container{
+  min-width:10rem;
+  min-height:10rem;
+}
+.ct-chart-donut{
+  filter:drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.64));
+}
+.ct-series-a{
+  fill:rgb(109, 246, 92);
+
+}
+.ct-series-b{
+  fill:rgb(255, 218, 107);
+}
+
+.ct-label{
+  display:none;
+}
+#win-top-ratio{
+  font-family: "Righteous",cursive;
+  font-weight:bold;
+}
+#win-percent{
+  font-family: "Righteous",cursive;
+  font-weight:bold;
+  color:
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import ChartistGraph from "react-chartist";
 
 
 class App extends Component {
@@ -116,12 +117,19 @@ processReq(){
         <div className="App">
           <header className="App-header">
             <div id="header-cover">
-              <div id="top-accent"></div>
+              <div id="top-accent">
+                <div id="statboi-img-container">
+                  <img id="statboi-img" src={require('./img/statboi.png')} alt=""/>
+                </div>
+
+                <div id="stat-boi-network"></div>
+              </div>
               <div id="nav">
                 <ul id="nav-links">
-                  <li className="nav-link nav-active" id="home-link">Home</li>
-                  <li className="nav-link" id="compare-link">Side by Side</li>
-                  <li className="nav-link" id="top-link">Top Players</li>
+                  <li className="nav-link nav-active" id="home-link" href="#">HOME</li>
+                  <li className="nav-link" id="compare-link">SIDE BY SIDE</li>
+                  <li className="nav-link" id="top-link">TOP PLAYERS</li>
+                  <li className="nav-link" id="item-link">ITEM STATS</li>
                 </ul>
               </div>
               <h1 id="header-logo">PUBG BOI</h1>
@@ -224,7 +232,7 @@ class Search extends Component{
     return(
       <div id="search-container">
         <form id="search-form" action="">
-          <input id="search-input" type="text" placeholder="Player Name" value={this.props.search} onChange={this.props.updatesearch}></input>
+          <input id="search-input" type="text" placeholder="PUBG Player Name" value={this.props.search} onChange={this.props.updatesearch}></input>
           <button id="search-button" action="" onClick={this.props.getPlayer}>GO</button>
         </form>
       </div>
@@ -449,7 +457,7 @@ class User extends Component{
 
   }
 componentDidMount(){
-
+  // This calls directly to PUBG api, transitioning to server-side calls
     var that=this;
     this.setState({playerInfo: this.props.playerInfo});
     this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.state.season;
@@ -463,7 +471,14 @@ componentDidMount(){
     })
     .then(response=>response.json())
     .then(result=>that.setState({player: result})).catch(error=>console.log(error));
-
+// This will be the call to app server, which redirects to PUBG API
+  // fetch('/user/',{
+  //   method:'get',
+  //   headers: new Headers({
+  //   'Content-Type': 'application/json'
+  //     }),
+  //   body: this.statString
+  // }).then(response=>response.json()).then(result=>that.setState({player:result})).catch(error=>console.log(error))
 
 }
 changeSeason(e){
@@ -474,6 +489,20 @@ changeFpp(){
   this.setState({fpp: !this.state.fpp});
 }
   render(){
+    var winratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins);
+    var tenratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].top10s+this.state.player.data.attributes.gameModeStats['solo'].top10s+this.state.player.data.attributes.gameModeStats['duo-fpp'].top10s+this.state.player.data.attributes.gameModeStats['duo'].top10s+this.state.player.data.attributes.gameModeStats['squad-fpp'].top10s+this.state.player.data.attributes.gameModeStats['squad'].top10s);
+    const data={
+      series:[((winratio/tenratio)*100) , (100-(((winratio/tenratio)*100)))]
+    }
+    const options={
+      donut: true,
+      donutWidth:60,
+      startAngle: 270,
+      total:200,
+      donutSolid:true,
+      labels: false
+    }
+    const type="Pie"
 
     return(
       <div id="user-page">
@@ -518,9 +547,14 @@ changeFpp(){
                  </p>
               </div>
 
-               <div id="gold-medal-container" className="overview-stat-container overview-stat">
+              <div id="gold-medal-container" className="overview-stat-container overview-stat">
                  <img id="gold-medal" src={require("./img/gold-medal.png")} alt=""/>
-                 <div id="total-wins" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">wins</span></div>
+                 <div id="total-wins" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">Wins</span></div>
+              </div>
+              <div id="chart-container" className="overview-stat-container">
+                <ChartistGraph data={data} options={options} type={type} />
+                <span id="win-percent" className="stat-grey">Wins <span className="overview-stat">{((winratio/tenratio)*100).toFixed(1)}%</span> of Top 10 Scenarios</span><br />
+
               </div>
             </div>
 
@@ -905,6 +939,7 @@ class Matches extends Component{
       matches:[]
     }
   }
+  // Use map function to map matches array into individual Match components
   render(){
     return(
       <div id="matches-container">
@@ -915,6 +950,14 @@ class Matches extends Component{
     )
   }
 
+}
+class Match extends Component{
+  render(){
+    return(
+      <div className="match">
+      </div>
+    )
+  }
 }
 
 class Stats extends Component{
