@@ -239,6 +239,7 @@ class User extends Component{
     this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
     this.authorization="Bearer "+this.key;
     this.state={
+      statsActive:true,
       fpp:true,
       season:'division.bro.official.2018-05',
       player: {
@@ -504,17 +505,35 @@ changeFpp(){
           <div id="avatar-holder">
             <img className="avatar" src="img/user.svg" alt=""/>
           </div>
-
+          <div id="stats-matches-changer">
+            <span>STATS</span><span>MATCHES</span>
+          </div>
           <div id="overview">
-            <h2>OVERVIEW</h2>
-            <p>
-            {this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} / {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} Games Won</p>
+            <h2 id="overview-title">OVERVIEW</h2>
+            <div id="overview-stat-container">
+              <div id="total-rounds" className="overview-stat-container">
+                <img id="boxing-gloves" src={require('./img/boxing.svg')} alt="boxing-gloves"/>
+                <p className="overview-stat stat-margin">
+                   {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} <span className="stat-grey">Rounds</span>
+                 </p>
+              </div>
+
+               <div id="gold-medal-container" className="overview-stat-container overview-stat">
+                 <img id="gold-medal" src={require("./img/gold-medal.png")} alt=""/>
+                 <div id="total-wins" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">wins</span></div>
+              </div>
+            </div>
+
 
           </div>
 
-          <div id="total-wins-chart"></div>
 
-          <h3>Game Mode Stats</h3>
+
+          <div id="total-wins-chart">
+
+
+          </div>
+
           <div id="modes-container">
             {this.state.fpp && <Solosfpp data={this.state.player.data.attributes.gameModeStats['solo-fpp']} />}
             {!this.state.fpp && <Solos data={this.state.player.data.attributes.gameModeStats['solo']} />}
@@ -526,6 +545,7 @@ changeFpp(){
 
         </div>
       </div>
+
     )
   }
 }
@@ -757,8 +777,10 @@ class Solosfpp extends Component{
     return(
         <div id="solosfpp" className="mode">
           <div className="section-header bg-orange">
-            <span><i className="solo-icon"></i></span>
-            <span className="fpp-bold">FPP</span>
+            <span className="mode-bold">SOLO FPP</span>
+            <div>
+              <span className="rounds-played">{this.state.data.roundsPlayed}</span> <span>ROUNDS</span>
+            </div>
           </div>
         <Stats data={this.state.data} />
         </div>
@@ -809,8 +831,10 @@ class Duosfpp extends Component{
     return(
         <div id="duosfpp" className="mode">
           <div className="section-header bg-green">
-          <span><i className="solo-icon"></i><i className="solo-icon"></i></span>
-          <span className="fpp-bold">FPP</span>
+            <span className="mode-bold">DUOS FPP</span>
+            <div>
+              <span className="rounds-played">{this.state.data.roundsPlayed}</span> <span>ROUNDS</span>
+            </div>
           </div>
           <Stats data={this.state.data} />
         </div>
@@ -862,8 +886,11 @@ class Squadsfpp extends Component{
     return(
         <div id="squadsfpp" className="mode">
           <div className="section-header bg-purple">
-          <span><i className="solo-icon"></i><i className="solo-icon"></i><i className="solo-icon"></i><i className="solo-icon"></i></span>
-          <span className="fpp-bold">FPP</span>
+            <span className="mode-bold">SQUADS FPP</span>
+            <div>
+              <span className="rounds-played">{this.state.data.roundsPlayed}</span> <span>ROUNDS</span>
+            </div>
+
           </div>
         <Stats data={this.state.data} />
         </div>
@@ -958,38 +985,38 @@ class Stats extends Component{
           <div className="grid-kdr">KRD: {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}
             <div id="kdr-chart"></div>
           </div>
-          <div className="grid-top-ten">
+          <div className="grid-top-ten grid-unit">
             <div id="top-ten-total" className="stat-total">{this.state.data.top10s}</div>
             <div id="top-ten-subtitle" className="stat-subtitle">Top 10s</div>
           </div>
-          <div className="grid-kill-per-game">
+          <div className="grid-kill-per-game grid-unit">
             <div id="kill-er-game-total" className="stat-total">{(this.state.data.kills/this.state.data.roundsPlayed).toFixed(1)}</div>
             <div id="kills-per-game-subtitle" className="stat-subtitle">Kills/Game</div>
             <div id="kills-per-game-graphic"></div>
           </div>
-          <div className="grid-headshots">
+          <div className="grid-headshots grid-unit">
           <div id="headshots-total" className="stat-total"></div>
             <div id="headshots-subtitle" className="stat-subtitle">% of Kills as Headshots</div>
             <div id="headshots-graphic"></div>
           </div>
-          <div className="grid-max-streak">
+          <div className="grid-max-streak grid-unit">
             <div id="kill-streak-total" className="stat-total">{this.state.data.roundMostKills}</div>
             <div id="kill-streak-subtitle" className="stat-subtitle">Longest Kill Streak</div>
             <div id="kill-streak-graphic"></div>
           </div>
-          <div className="grid-longest-kill">
+          <div className="grid-longest-kill grid-unit">
             <div id="longest-kill-total" className="stat-total">{this.state.data.longestKill.toFixed(1)} m.</div>
             <div id="longest-kill-subtitle" className="stat-subtitle">Farthest Distance Kill</div>
             <div id="longest-kill-graphic">
             <span>That's {(this.state.data.longestKill/109.1).toFixed(1)} football fields.</span>
             </div>
           </div>
-          <div className="grid-damage-per-round">
+          <div className="grid-damage-per-round grid-unit">
             <div id="avg-damage-total" className="stat-total"></div>
             <div id="avg-damage-subtitle" className="stat-subtitle">Average Damage / Round</div>
             <div id="avg-damage-graphic"></div>
           </div>
-          <div className="grid-time-survived">
+          <div className="grid-time-survived grid-unit">
             <div id="survived-time-total" className="stat-total"></div>
             <div id="survived-time-subtitle" className="stat-subtitle">Average Survival Time</div>
             <div id="survived-time-graphic"></div>
@@ -1098,6 +1125,7 @@ class Footer extends Component{
           <div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
           <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
           <div>Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+          <div>Icons made by <a href="https://www.flaticon.com/authors/pongsakornred" title="pongsakornRed">pongsakornRed</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
         </div>
       </div>
     )

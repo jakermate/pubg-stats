@@ -182,6 +182,7 @@ h1{
   font-size: 3rem;
   letter-spacing: -.1rem;
   font-weight:400;
+  text-shadow:5px 5px 10px black;
 }
 #options{
   margin-left:1rem;
@@ -198,17 +199,65 @@ h1{
   display:inline-block;
   color:rgb(80, 80, 80)
 }
-#overview{
-  margin-left:1rem;
+#stats-matches-changer{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 1.3rem;
+  font-weight: bold;
 }
+#overview{
+  padding-left:1rem;
+  padding-right:1rem;
+  background-color:rgb(82, 82, 82);
+  overflow:auto;
 
+}
+#overview-title{
+  text-align: center;
+  font-family: "Righteous",cursive;
+  text-shadow: 5px 5px 10px black;
+}
+#overview-stat-container{
+  display:flex;
+  flex-direction: row;
+  justify-content:space-around;
+  align-items:flex-start;
+  flex-wrap: wrap;
+}
+.overview-stat-container{
+  width:50%;
+  text-align: center;
+}
+.stat-margin{
+  margin-top:.3rem;
+  margin-bottom:.3rem
+}
 /* Game Mode Stats */
 #wins{
   overflow:auto;
 }
-.gold-medal{
-  height:1rem;
-  width:1rem;
+#gold-medal-container{
+  height:8rem;
+  text-align: center;
+}
+#gold-medal{
+  overflow: auto;
+  max-width:100%;
+  max-height:100%;
+
+}
+.overview-stat{
+  font-family: "Righteous",cursive;
+  font-size:1.4rem;
+  color:rgb(255, 255, 255);
+}
+.stat-grey{
+  color:rgb(172, 172, 172);
+}
+
+#boxing-gloves{
+  height:8rem;
 }
 .solo-icon{
   background-image: url('./img/avatar.svg');
@@ -224,7 +273,11 @@ h1{
 }
 .section-header{
   color:black;
-  padding:.7rem 1.4rem;
+  padding:.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
 }
 .stats-container{
   background-color: rgb(157,157,157);
@@ -236,6 +289,7 @@ h4{
 }
 #header-logo{
   margin-top:.5rem;
+  text-shadow: 5px 5px 10px black;
 }
 .stat-grid{
   display:grid;
@@ -245,7 +299,11 @@ h4{
 .grid-kdr{
   grid-row: 1/3;
 }
+.grid-unit{
+  padding:.5rem;
+}
 .stat-total{
+  font-family: "Righteous",cursive;
   font-weight:bold;
   font-size: 2rem;
 }
@@ -253,9 +311,26 @@ h4{
   color:rgb(208, 208, 208)
 }
 .fpp-bold{
-  display:inline-block;
-  transform:rotate(-90deg);
+  font-family:"Righteous",cursive;
+  color:rgb(0, 0, 0);
   font-weight: bold;
+}
+.mode-bold{
+  font-family:"Righteous",cursive;
+  font-weight:bold;
+  font-style: italic;
+  color:black;
+}
+.rounds-played{
+  font-family: "Righteous",cursive;
+  font-size: 1.4rem;
+}
+#modes{
+  text-align: center;
+  font-family: "Righteous",cursive;
+  font-size: 1.4rem;
+  margin:0;
+  background-color: rgb(68, 68, 68)
 }
 
 
