@@ -121,7 +121,7 @@ updateSearch=(event)=>{
                 <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} choosePC={this.choosePC} />} />
                 <Route path="/leaderboards" component={Leaderboards} />
                 <Route path="/compare" component={Compare} />
-                <Route path="/user" component={User} />
+                <Route path="/user" render={(props)=><User search={this.state.search} region={this.state.region} />} />
                 <Route component={Notfound} />
                 </Switch>
             </div>
@@ -483,13 +483,17 @@ componentDidMount(){
     // .then(response=>response.json())
     // .then(result=>that.setState({player: result})).catch(error=>console.log(error));
 // This will be the call to app server, which redirects to PUBG API
-  // fetch('/user/',{
-  //   method:'get',
-  //   headers: new Headers({
-  //   'Content-Type': 'application/json'
-  //     }),
-  //   body: this.statString
-  // }).then(response=>response.json()).then(result=>that.setState({player:result})).catch(error=>console.log(error))
+  console.log('User page mounted.  Fetch next using string: '+this.props.search);
+  this.region = this.props.region;
+  this.url = '/user/?name='+this.props.search+"&region="+this.region;
+  console.log('Passing Fetch url: ' +this.url);
+  const that = this;
+  fetch(this.url,{
+    method:'get',
+    headers: new Headers({
+    'Content-Type': 'application/json'
+      }),
+  }).then(response=>response.json()).then(json=>console.log(json)).catch(error=>console.log(error));
 
 }
 changeSeason(e){
