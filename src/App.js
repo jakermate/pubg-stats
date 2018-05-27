@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import ChartistGraph from "react-chartist";
 
 
@@ -43,9 +43,8 @@ class App extends Component {
     this.authorization="Bearer "+this.key;
     this.player1={};
     this.err404="Search Found Nothing (hint: Player Names Are Case Sensitive)";
-    this.processReq=this.processReq.bind(this);
+    // this.processReq=this.processReq.bind(this);
     //Grab season list on first mounting of main app component.
-
   }
 
 choosePC = () =>{
@@ -72,105 +71,112 @@ updateSearch=(event)=>{
   this.setState({search: event.target.value});
   console.log("State Updated.");
 }
-getPlayer=(e)=>{
-  this.setState({playerID:''});
-  var that = this;
-  e.preventDefault();
-  console.log("searching");
-  this.setState({hasSearched: true});
-  var name = this.state.search;
-  var playerFilter = "/players?filter[playerNames]=";
-  var requestString = this.baseURL+'/'+this.state.region+playerFilter+name;
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function(){
-    if(req.status==200 && req.readyState==4){
-      this.player1 = JSON.parse(req.responseText);
-      console.log(this.player1);
-      this.setState({player1: this.player1});
-      console.log(this.player1.data[0].attributes.name);
-      this.processReq();
-    }
-    if(this.status==404&&this.readyState==4){
-      console.log('Player not found.');
-    }
-  }.bind(this);
-  req.open('GET',requestString, true);
-  req.setRequestHeader('Authorization', this.authorization);
-  req.setRequestHeader('Accept',"application/json");
-  req.send();
-}
-processReq(){
-  this.playerArray = this.player1.data;
-  this.playerAtt = this.playerArray[0].attributes;
-  this.playerName = this.playerAtt.name;
-  this.setState({playerID: this.playerArray[0].id});
-  console.log(this.state.playerID);
-  console.log(this.playerName);
-  this.playerRel = this.playerArray[0].relationships;
-  this.playerMatches = this.playerRel.matches;
-  console.log(this.playerMatches);
-}
+
+// getPlayer=(e)=>{
+//   this.setState({playerID:''});
+//   var that = this;
+//   e.preventDefault();
+//   console.log("searching");
+//   this.setState({hasSearched: true});
+//   var name = this.state.search;
+//   var playerFilter = "/players?filter[playerNames]=";
+//   var requestString = this.baseURL+'/'+this.state.region+playerFilter+name;
+//   var req = new XMLHttpRequest();
+//   req.onreadystatechange = function(){
+//     if(req.status==200 && req.readyState==4){
+//       this.player1 = JSON.parse(req.responseText);
+//       console.log(this.player1);
+//       this.setState({player1: this.player1});
+//       console.log(this.player1.data[0].attributes.name);
+//       this.processReq();
+//     }
+//     if(this.status==404&&this.readyState==4){
+//       console.log('Player not found.');
+//     }
+//   }.bind(this);
+//   req.open('GET',requestString, true);
+//   req.setRequestHeader('Authorization', this.authorization);
+//   req.setRequestHeader('Accept',"application/json");
+//   req.send();
+// }
+// processReq(){
+//   this.playerArray = this.player1.data;
+//   this.playerAtt = this.playerArray[0].attributes;
+//   this.playerName = this.playerAtt.name;
+//   this.setState({playerID: this.playerArray[0].id});
+//   console.log(this.state.playerID);
+//   console.log(this.playerName);
+//   this.playerRel = this.playerArray[0].relationships;
+//   this.playerMatches = this.playerRel.matches;
+//   console.log(this.playerMatches);
+// }
 
   render() {
     return (
       <Router>
         <div className="App">
-          <header className="App-header">
-            <div id="header-cover">
-              <div id="top-accent">
-                <div id="statboi-img-container">
-                  <img id="statboi-img" src={require('./img/statboi.png')} alt=""/>
-                </div>
 
-                <div id="stat-boi-network"></div>
-              </div>
-              <div id="nav">
-                <ul id="nav-links">
-                  <li className="nav-link nav-active" id="home-link" href="#">HOME</li>
-                  <li className="nav-link" id="compare-link">SIDE BY SIDE</li>
-                  <li className="nav-link" id="top-link">TOP PLAYERS</li>
-                  <li className="nav-link" id="item-link">ITEM STATS</li>
-                </ul>
-              </div>
-              <h1 id="header-logo">PUBG BOI</h1>
-              <p id="subtitle">IT'S A NUMBERS GAME</p>
-
-
-            <PlatformSelect chooseXbox={this.chooseXbox} choosePC={this.choosePC}/>
-            {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} active={this.state.region} />}
-            {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
-
-            {/*Displays search box only when region is selected.*/}
-            {this.state.region!=""&& (this.state.xbox || this.state.pc) && <Search updatesearch={this.updateSearch} search={this.state.search} getPlayer={this.getPlayer}/>}
-            <div id="bottom-accent"></div>
-          </div>
-        </header>
-
-
-          {this.state.playerID!="" &&<User playerInfo={this.player1} region={this.state.region} id={this.state.playerID} season={this.state.season} seasons={this.state.seasons} />}
-
-
-          {/*
             <div id="router">
-            <Route path="/" exact component={home} />
-            <Route path="/leaderboards" component={Leaderboards} />
-            <Route path="/compare" component={Compare} />
-            <Route path="/user/:id" component={User} />
-            <Route component={Notfound} />
+              <Switch>
+                <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} choosePC={this.choosePC} />} />
+                <Route path="/leaderboards" component={Leaderboards} />
+                <Route path="/compare" component={Compare} />
+                <Route path="/user" component={User} />
+                <Route component={Notfound} />
+                </Switch>
             </div>
-          */}
+
         </div>
       </Router>
     );
   }
 }
 class Home extends Component{
+  constructor(){
+    super();
+    this.state={
+      region:'pc-na',
+      xbox:false,
+      pc:true
+    }
+  }
+  componentWillReceiveProps(newprops){
+    this.setState({xbox:newprops.xbox});
+    this.setState({pc:newprops.pc});
+  }
   render(){
     return(
       <div id="home">
-        <div id="leaderboards">
+      <header className="App-header">
+        <div id="header-cover">
+          <div id="top-accent">
+            <div id="statboi-img-container">
+              <img id="statboi-img" src={require('./img/statboi.png')} alt=""/>
+            </div>
+
+            <div id="stat-boi-network"></div>
+          </div>
+            <ul id="nav-links">
+              <li className="nav-link nav-active" id="home-link" href="#">HOME</li>
+              <li className="nav-link" id="compare-link">SIDE BY SIDE</li>
+              <li className="nav-link" id="top-link">TOP PLAYERS</li>
+              <li className="nav-link" id="item-link">ITEM STATS</li>
+            </ul>
         </div>
-      </div>
+          <h1 id="header-logo">PUBG BOI</h1>
+          <p id="subtitle">IT'S A NUMBERS GAME</p>
+
+
+          <PlatformSelect chooseXbox={this.props.chooseXbox} choosePC={this.props.choosePC}/>
+          {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} active={this.state.region} />}
+          {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
+
+
+         <Search history={this.props.history} updatesearch={this.props.updateSearch} runSearch={this.props.runSearch} getPlayer={this.getPlayer}/>
+         <div id="bottom-accent"></div>
+
+    </header>
+  </div>
     )
   }
 }
@@ -226,14 +232,19 @@ class XboxRegion extends Component{
 class Search extends Component{
   constructor(props){
     super(props);
-
+    this.runSearch=this.runSearch.bind(this);
+  }
+  runSearch(event){
+    event.preventDefault();
+    console.log('Running Search.')
+    this.props.history.push('/user');
   }
   render(){
     return(
       <div id="search-container">
         <form id="search-form" action="">
           <input id="search-input" type="text" placeholder="PUBG Player Name" value={this.props.search} onChange={this.props.updatesearch}></input>
-          <button id="search-button" action="" onClick={this.props.getPlayer}>GO</button>
+          <button id="search-button" action="" onClick={this.runSearch}>GO</button>
         </form>
       </div>
     )
@@ -458,19 +469,19 @@ class User extends Component{
   }
 componentDidMount(){
   // This calls directly to PUBG api, transitioning to server-side calls
-    var that=this;
-    this.setState({playerInfo: this.props.playerInfo});
-    this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.state.season;
-    console.log('Getting Stats from season');
-    fetch(this.statString, {
-      method: 'get',
-      headers: new Headers({
-        'Authorization': this.authorization,
-        'Accept': 'application/json'
-      })
-    })
-    .then(response=>response.json())
-    .then(result=>that.setState({player: result})).catch(error=>console.log(error));
+    // var that=this;
+    // this.setState({playerInfo: this.props.playerInfo});
+    // this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.state.season;
+    // console.log('Getting Stats from season');
+    // fetch(this.statString, {
+    //   method: 'get',
+    //   headers: new Headers({
+    //     'Authorization': this.authorization,
+    //     'Accept': 'application/json'
+    //   })
+    // })
+    // .then(response=>response.json())
+    // .then(result=>that.setState({player: result})).catch(error=>console.log(error));
 // This will be the call to app server, which redirects to PUBG API
   // fetch('/user/',{
   //   method:'get',
