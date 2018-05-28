@@ -118,10 +118,10 @@ updateSearch=(event)=>{
 
             <div id="router">
               <Switch>
-                <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} choosePC={this.choosePC} />} />
+                <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} search={this.state.search} choosePC={this.choosePC} />} />
                 <Route path="/leaderboards" component={Leaderboards} />
                 <Route path="/compare" component={Compare} />
-                <Route path="/user" render={(props)=><User search={this.state.search} region={this.state.region} />} />
+                <Route path="/user/:name" render={(props)=><User {...props} search={this.state.search} region={this.state.region} />} />
                 <Route component={Notfound} />
                 </Switch>
             </div>
@@ -172,7 +172,7 @@ class Home extends Component{
           {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
 
 
-         <Search history={this.props.history} updatesearch={this.props.updateSearch} runSearch={this.props.runSearch} getPlayer={this.getPlayer}/>
+         <Search history={this.props.history} updatesearch={this.props.updateSearch} runSearch={this.props.runSearch} getPlayer={this.getPlayer} search={this.props.search} />
          <div id="bottom-accent"></div>
 
     </header>
@@ -236,8 +236,8 @@ class Search extends Component{
   }
   runSearch(event){
     event.preventDefault();
-    console.log('Running Search.')
-    this.props.history.push('/user');
+    console.log('Running Search.');
+    this.props.history.push('/user/'+this.props.search);
   }
   render(){
     return(
@@ -258,6 +258,7 @@ class User extends Component{
     this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
     this.authorization="Bearer "+this.key;
     this.state={
+      error: false,
       statsActive:true,
       fpp:true,
       season:'division.bro.official.2018-05',
@@ -459,7 +460,8 @@ class User extends Component{
         data:[
             {
               attributes:{
-                name:''
+                name:'',
+                id:''
             }
           }
         ]
@@ -468,24 +470,14 @@ class User extends Component{
 
   }
 componentDidMount(){
-  // This calls directly to PUBG api, transitioning to server-side calls
-    // var that=this;
-    // this.setState({playerInfo: this.props.playerInfo});
-    // this.statString=this.baseURL+'/'+this.props.region+'/players/'+this.props.id+'/seasons/'+this.state.season;
-    // console.log('Getting Stats from season');
-    // fetch(this.statString, {
-    //   method: 'get',
-    //   headers: new Headers({
-    //     'Authorization': this.authorization,
-    //     'Accept': 'application/json'
-    //   })
-    // })
-    // .then(response=>response.json())
-    // .then(result=>that.setState({player: result})).catch(error=>console.log(error));
+  const {name} = this.props.match.params;
+
 // This will be the call to app server, which redirects to PUBG API
   console.log('User page mounted.  Fetch next using string: '+this.props.search);
   this.region = this.props.region;
-  this.url = '/user/?name='+this.props.search+"&region="+this.region;
+  this.userParam = this.props.match.params.name;
+  console.log(this.userParam);
+  this.url = '/user/?name='+this.userParam+"&region="+this.region+"&season="+this.state.season;
   console.log('Passing Fetch url: ' +this.url);
   const that = this;
   fetch(this.url,{
@@ -493,7 +485,7 @@ componentDidMount(){
     headers: new Headers({
     'Content-Type': 'application/json'
       }),
-  }).then(response=>response.json()).then(json=>console.log(json)).catch(error=>console.log(error));
+  }).then(response=>response.json()).then(json=>this.setState({player:json})).catch(error=>console.log(error));
 
 }
 changeSeason(e){
@@ -521,6 +513,13 @@ changeFpp(){
 
     return(
       <div id="user-page">
+      <header>
+
+      </header>
+
+
+
+
         <div id="user-info">
           <div id="name-container">
             <span id="player-name">{this.state.playerInfo.data[0].attributes.name}</span><span id="player-region">{this.props.region}</span>
