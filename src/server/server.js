@@ -54,35 +54,47 @@ app.get('/user/', function(req,res){
     // Sends request to API
     request(nameOptions,function(error,response,body){
       // Set returned json object body to variables to be sennt to client as callback to primary get request handler.
+
       let object = response.body;
-      console.log(object);
-      objectJSON = JSON.parse(object);
-      // namecache crashes server on bad search, must make conditional upon found resource on api side, and error handling
-      nameCache[searchName] = objectJSON.data[0].id;
-      console.log(nameCache);
-      // dont send until stat/season object is found
-      // res.json(object);
-      let options = {
-        url: url+"/"+searchRegion+"/players/"+nameCache[searchName]+"/seasons/"+searchSeason,
-        method:'get',
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': authorization
-        }
+      console.log(body);
+      if("errors" in JSON.parse(body)){
+        console.log("Error from api");
+        res.send('ERROR');
       }
-      // Take player ID and season query and use another request to call for player stats from specific season.
-      request(options,function(error,response,body){
-        object = response.body;
-        console.log(object);
-        res.send(object);
-      })
-
+      else{
+        objectJSON = JSON.parse(object);
+        // namecache crashes server on bad search, must make conditional upon found resource on api side, and error handling
+        nameCache[searchName] = objectJSON.data[0].id;
+        console.log(nameCache);
+        // dont send until stat/season object is found
+        // res.json(object);
+        let options = {
+          url: url+"/"+searchRegion+"/players/"+nameCache[searchName]+"/seasons/"+searchSeason,
+          method:'get',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': authorization
+          }
+        }
+        // Take player ID and season query and use another request to call for player stats from specific season.
+        request(options,function(error,response,body){
+          object = response.body;
+          console.log(object);
+          if (error){
+            throw error;
+          }
+          res.send(object);
+        })
+      }
     });
-
 })
 
 app.get('/user/:id',function(req,res){
   console.log('NOT TRIGGERING THIS ONE');
+})
+
+app.get('/user/matches',function(req,res){
+  console.log('Fetching Matches.')
 })
 
 

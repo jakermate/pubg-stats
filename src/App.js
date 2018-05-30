@@ -253,9 +253,11 @@ class User extends Component{
   constructor(props){
     super(props);
     this.baseURL="https://api.playbattlegrounds.com/shards";
-    this.key="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNzJkMmFhMC0zMDUyLTAxMzYtMDg0Ny0wYTU4NjQ3NTk1MDIiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI1Mjc4MTA5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MTB9.yveXxHRPZcx3mAnC7CMGY-SbEArJV4gAK40Pv1VeLZw";
-    this.authorization="Bearer "+this.key;
+    this.updateSearch = this.updateSearch.bind(this);
     this.state={
+      search:"",
+      notfound: false,
+      loading: true,
       error: false,
       statsActive:true,
       fpp:true,
@@ -468,8 +470,6 @@ class User extends Component{
 
   }
 componentDidMount(){
-  // const {name} = this.props.match.params;
-
 // This will be the call to app server, which redirects to PUBG API
   console.log('User page mounted.  Fetch next using string: '+this.props.search);
   this.region = this.props.region;
@@ -483,7 +483,7 @@ componentDidMount(){
     headers: new Headers({
     'Content-Type': 'application/json'
       }),
-  }).then(response=>response.json()).then(json=>this.setState({player:json})).catch(error=>console.log(error));
+  }).then(response=>response.json()).then(json=>this.setState({player:json,loading:false})).catch(function(error){console.log(error);that.setState({notfound:true,loading:false})});
 
 }
 changeSeason(e){
@@ -492,6 +492,12 @@ changeSeason(e){
 }
 changeFpp(){
   this.setState({fpp: !this.state.fpp});
+}
+updateSearch(event){
+  this.setState({search: event.target.value});
+}
+search(){
+
 }
   render(){
     var winratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins);
@@ -511,17 +517,29 @@ changeFpp(){
 
     return(
       <div id="user-page">
-      <header id="user-header">
-        <div id="user-search-container">
-
+        <div id="user-header-bg">
         </div>
+        <header id="user-header">
+          <div id="top-bar">
 
+          </div>
+          <div id="user-search-container">
+            <div id="search-form-container">
+              <form action="" id="user-search-form">
+                <span id="search-subtitle">SEARCH FOR PLAYER</span><br />
+                <input id="search-input" type="text" placeholder="PUBG Player Name" value={this.state.search} onChange={this.updateSearch} />
+                <button onClick={this.search}>GO</button>
+              </form>
+            </div>
+        </div>
       </header>
 
 
 
-
-        <div id="user-info">
+      <div id="user-content">
+      {this.state.notfound && <NotFound />}
+      {this.state.loading && <Placeholder />}
+        {!this.state.loading && !this.state.notfound && <div id="user-info">
           <div id="name-container">
             <span id="player-name">{this.userParam}</span><span id="player-region">{this.props.region}</span>
           </div>
@@ -571,6 +589,12 @@ changeFpp(){
                 <span id="win-percent" className="stat-grey">Wins <span className="overview-stat">{((winratio/tenratio)*100).toFixed(1)}%</span> of Top 10 Scenarios</span><br />
 
               </div>
+              <div className="overview-stat-container">
+                <span ></span>
+              </div>
+
+
+
             </div>
 
 
@@ -592,9 +616,9 @@ changeFpp(){
             {!this.state.fpp && <Squads data={this.state.player.data.attributes.gameModeStats['squad']} />}
           </div>
 
+          </div>}
         </div>
       </div>
-
     )
   }
 }
@@ -1195,6 +1219,25 @@ class Notfound extends Component{
       <div id="error-page">
         <h1>PAGE NOT FOUND</h1>
         <Link to="/">PUBG BOI Home</Link>
+      </div>
+    )
+  }
+}
+
+class Placeholder extends Component{
+  render(){
+    return(
+      <div id="placeholder">
+        <img src={require('./img/loading.svg')} alt=""/>
+      </div>
+    )
+  }
+}
+class NotFound extends Component{
+  render(){
+    return(
+      <div id="not-found-component">
+        <h1>PLAYER NOT FOUND</h1>
       </div>
     )
   }
