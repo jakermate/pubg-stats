@@ -563,7 +563,7 @@ search(){
             </div>
             <div id="player-rank">
               <p id="pubgboi-rank">{this.state.rank}</p>
-              <p id="rank-subtitle">PUBG BOI RANKINGS</p>
+              <p id="rank-subtitle">PUBG BOI RANKING</p>
             </div>
           </div>
 
