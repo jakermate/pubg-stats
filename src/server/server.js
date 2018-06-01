@@ -15,12 +15,18 @@ const request = require('request');
 app.listen(port,function(){
   console.log("PUBG Server Running.");
 });
+// Parsing Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+
 app.use(function(req,res,next){
   res.header("Access-Control-Allow-Origin","*");
   res.header("Access-COntrol-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
   next();
+})
+// Error handling middleware (works on bad requests)
+app.use(function(err,req,res,next){
+  res.send(500, {status:500, message:'Internal Server Error', type:'Internal'});
 })
 
 
@@ -89,9 +95,6 @@ app.get('/user/', function(req,res){
     });
 })
 
-app.get('/user/:id',function(req,res){
-  console.log('NOT TRIGGERING THIS ONE');
-})
 
 app.get('/user/matches',function(req,res){
   console.log('Fetching Matches.')

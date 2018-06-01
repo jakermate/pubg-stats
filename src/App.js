@@ -255,6 +255,8 @@ class User extends Component{
     this.baseURL="https://api.playbattlegrounds.com/shards";
     this.updateSearch = this.updateSearch.bind(this);
     this.state={
+      rank: 0,
+      seasonActive:'Season 5',
       search:"",
       notfound: false,
       loading: true,
@@ -487,7 +489,7 @@ componentDidMount(){
 
 }
 changeSeason(e){
-  this.setState({season: e.target.value})
+  this.setState({season: e.target.value});
   console.log("Season changed to"+this.state.season);
 }
 changeFpp(){
@@ -521,15 +523,30 @@ search(){
         </div>
         <header id="user-header">
           <div id="top-bar">
-
+            <div id="logo-container">
+            <Link to="/" id="home-link">
+              <div id="pubg-boi-logo">
+                <img id="logo" src={require('./img/pubgboi-logo.png')} alt=""/>
+              </div>
+            </Link>
+            </div>
+            <div id="user-navbar">
+              <Link className="navbar-link" style={{padding:'0 .5rem',letterSpacing:'-.1rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/" id="nav-home-link">HOME</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',letterSpacing:'-.1rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/compare" id="compare-nav-link">COMPARE</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',letterSpacing:'-.1rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">LEADERBOARDS</Link>
+            </div>
           </div>
           <div id="user-search-container">
             <div id="search-form-container">
+              <span id="search-subtitle">SEARCH FOR PLAYER</span>
               <form action="" id="user-search-form">
-                <span id="search-subtitle">SEARCH FOR PLAYER</span><br />
-                <input id="search-input" type="text" placeholder="PUBG Player Name" value={this.state.search} onChange={this.updateSearch} />
-                <button onClick={this.search}>GO</button>
+                <input id="user-search-input" type="text" placeholder="PUBG Player Name" value={this.state.search} onChange={this.updateSearch} />
+                <button id="user-search-button" onClick={this.search}>
+                  <i class="fas fa-search fa-2x"></i>
+                </button>
               </form>
+              <p>Find by PC Username or Xbox Gamertag</p>
+              <span>Currently Following Players</span>
             </div>
         </div>
       </header>
@@ -541,7 +558,13 @@ search(){
       {this.state.loading && <Placeholder />}
         {!this.state.loading && !this.state.notfound && <div id="user-info">
           <div id="name-container">
-            <span id="player-name">{this.userParam}</span><span id="player-region">{this.props.region}</span>
+            <div id="player-info">
+              <span id="player-name">{this.userParam}</span><span id="player-region">{this.props.region}</span>
+            </div>
+            <div id="player-rank">
+              <p id="pubgboi-rank">{this.state.rank}</p>
+              <p id="rank-subtitle">PUBG BOI RANKING</p>
+            </div>
           </div>
 
           <div id='options'>
@@ -564,25 +587,45 @@ search(){
 
             </select>
           </div>
-          <div id="avatar-holder">
-            <img className="avatar" src="img/user.svg" alt=""/>
-          </div>
-          <div id="stats-matches-changer">
-            <span>STATS</span><span>MATCHES</span>
-          </div>
+          <div id="buffer">
+            {this.state.statsActive &&
+              <div id="stats-matches-changer">
+                <span id ="stats-active">STATS</span><span id="matches-inactive">MATCHES</span>
+              </div>
+            }
+            {!this.state.statsActive &&
+              <div id="stats-matches-changer">
+                <span id ="stats-inactive">STATS</span>&&<span id="matches-active">MATCHES</span>
+              </div>
+            }
+            </div>
           <div id="overview">
-            <h2 id="overview-title">OVERVIEW</h2>
-            <div id="overview-stat-container">
+            <h2 id="overview-title">{this.state.seasonActive.toUpperCase()} OVERVIEW</h2>
+            <div id="overview-stats-holder">
               <div id="total-rounds" className="overview-stat-container">
-                <img id="boxing-gloves" src={require('./img/boxing.svg')} alt="boxing-gloves"/>
-                <p className="overview-stat stat-margin">
+                <div id="gloves-container">
+                  <img id="boxing-gloves" src={require('./img/boxing.svg')} alt="boxing-gloves"/>
+                </div>
+
+                <div className="overview-stat stat-margin">
                    {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} <span className="stat-grey">Rounds</span>
-                 </p>
+                 </div>
               </div>
 
-              <div id="gold-medal-container" className="overview-stat-container overview-stat">
-                 <img id="gold-medal" src={require("./img/gold-medal.png")} alt=""/>
+              <div id="total-wins" className="overview-stat-container overview-stat">
+                <div id="gold-medal-container">
+                   <img id="gold-medal" src={require("./img/gold-medal.png")} alt=""/>
+                </div>
                  <div id="total-wins" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">Wins</span></div>
+              </div>
+              <div className="overview-stat-container" id="overview-kills">
+                <div id="kill-graphic">
+                  <img id="kill-img" src={require('./img/kill.svg')} alt=""/>
+                </div>
+                <div id="total-kills" className="stat-margin overview-stat">
+                  {this.state.player.data.attributes.gameModeStats['solo-fpp'].kills+this.state.player.data.attributes.gameModeStats['solo'].kills+this.state.player.data.attributes.gameModeStats['duo-fpp'].kills+this.state.player.data.attributes.gameModeStats['duo'].kills+this.state.player.data.attributes.gameModeStats['squad-fpp'].kills+this.state.player.data.attributes.gameModeStats['squad'].kills}
+                  <span className="stat-grey"> Kills</span>
+                </div>
               </div>
               <div id="chart-container" className="overview-stat-container">
                 <ChartistGraph data={data} options={options} type={type} />
@@ -975,7 +1018,11 @@ class Matches extends Component{
   constructor(){
     super();
     this.state={
-      matches:[]
+      matches:[
+        {
+          matchID:"dsdaer3qf314r3e"
+        }
+      ]
     }
   }
   // Use map function to map matches array into individual Match components
@@ -983,7 +1030,7 @@ class Matches extends Component{
     return(
       <div id="matches-container">
         <ul id="match-list">
-
+          {this.state.matches.map((match,i)=> <Match key={i} />)}
         </ul>
       </div>
     )
@@ -994,6 +1041,7 @@ class Match extends Component{
   render(){
     return(
       <div className="match">
+
       </div>
     )
   }
@@ -1238,6 +1286,7 @@ class NotFound extends Component{
     return(
       <div id="not-found-component">
         <h1>PLAYER NOT FOUND</h1>
+        <p>Hint: Player names are case sensitive.</p>
       </div>
     )
   }
