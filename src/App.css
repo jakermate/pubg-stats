@@ -4,6 +4,8 @@
 }
 html{
   font-size:16px;
+  width:100%;
+  height:100%;
 }
 body{
   background-color:#222;
@@ -38,7 +40,6 @@ body{
 #statboi-img-container{
   max-width: 2rem;
   max-height: 2rem;
-  margin-right:0;
 }
 #statboi-img{
   width:100%;
@@ -64,32 +65,31 @@ body{
   justify-content: space-between;
 }
 #network{
-  display:flex;
   padding:5px;
-  align-items:flex-start;
-  flex-direction: row;
 }
 .br-tracker{
   font-size:.5rem;
   font-weight:bold;
-  color:rgb(144, 235, 36)
+  color:rgb(144, 235, 36);
+  margin:0;
 }
 .stat-tracker{
   font-size:1rem;
   font-weight: bolder;
-  color:rgb(182, 182, 182)
+  color:rgb(182, 182, 182);
 }
 #stat-boi-network{
   display:inline-block;
   text-align: left;
-  margin-left:1rem;
-  padding:.3rem;
+  padding-left: .5rem;
+  border-left: 2px solid rgb(144, 235, 36);
 }
 #bottom-accent{
   background-color: rgb(46, 46, 46);
   min-height:2rem;
 }
 #subtitle{
+  margin-bottom:0;
   font-size: .8rem;
   margin-top:0;
   color:yellow;
@@ -133,7 +133,7 @@ ul{
 #platform-search-section{
   margin-top:2rem;
   position:relative;
-  top:-5rem;
+  top:-3rem;
 }
 #platform-list{
   width:40%;
@@ -141,7 +141,7 @@ ul{
 }
 .active-region{
   color:yellow;
-  border-top:4px solid yellow;
+  border-top:2px solid yellow;
 }
 #pc-region-list{
   width:40%;
@@ -181,6 +181,7 @@ li{
   font-family: 'Rubik',sans-serif;
 }
 h1{
+  line-height: 6rem;
   font-size: 8rem;
   font-family: 'headliner';
   font-weight: 400;
@@ -196,7 +197,7 @@ h1{
   font-family:'Play',sans-serif;
 }
 #search-input{
-  margin-top:.5rem;
+  margin-top:1rem;
   box-sizing: border-box;
   border: 3px solid rgb(255, 255, 255);
   background-color:rgb(255, 255, 255);
@@ -215,9 +216,9 @@ h1{
   color:rgb(168, 168, 168);
   background-color: transparent;
   border-style: none;
-  position: absolute;
-  right:23%;
-  top:25%;
+  position:absolute;
+  right:12%;
+  top:33%;
 }
 #search-container{
   margin: 1rem 0;
@@ -233,6 +234,22 @@ input::placeholder{
 }
 .li-active{
   background-color:yellow;
+}
+/* HOME LEADERBOARDS */
+#top-players-section{
+  position:relative;
+  margin:2rem;
+  top:-3rem;
+  background-color: rgb(68, 68, 68);
+
+}
+#leaderboards-header{
+
+}
+#top-players-title{
+  color:rgb(232, 176, 38);
+  padding:1rem;
+  border-left: .3rem solid rgb(173, 137, 15);
 }
 
 /* USER */
@@ -269,7 +286,7 @@ input::placeholder{
   display:block;
   background-image: url('img/pubg-bg2.jpg');
   position: absolute;
-  height: 20rem;
+  height: 16rem;
   box-sizing: border-box;
   background-position: center;
   background-size: cover;
@@ -287,6 +304,7 @@ input::placeholder{
   padding:1.2rem;
   box-sizing: border-box;
   position: relative;
+  top:-3rem;
 }
 #user-search-input{
   width:100%;
@@ -330,7 +348,7 @@ input::placeholder{
 }
 #user-info{
   background-color:rgb(124, 124, 124);
-  margin-top:20rem;
+  margin-top:16rem;
   z-index: 10;
   width:100%;
   position:absolute;
@@ -349,20 +367,23 @@ input::placeholder{
 #name-container{
   display:flex;
   flex-direction: row;
-
-  overflow: auto;
   padding-top:.5rem;
 }
 #player-name{
-  font-family: "Righteous";
+  font-family: "Play", sans-serif;
   box-sizing:border-box;
   text-align: left;
   margin-top:1rem;
   margin-left:1rem;
   font-size: 3rem;
   letter-spacing: -.1rem;
-  font-weight:400;
+  font-weight:bold;
   text-shadow:5px 5px 10px black;
+}
+#player-info{
+  position:relative;
+  top:-4rem;
+  z-index: 1000;
 }
 #options{
   margin-left:1rem;
@@ -378,7 +399,7 @@ input::placeholder{
 #player-region{
   margin-left:.5rem;
   display:inline-block;
-  color:rgb(80, 80, 80)
+  color:rgb(221, 221, 221)
 }
 #buffer{
   margin-top:1rem;
@@ -414,9 +435,10 @@ input::placeholder{
 
 }
 #overview-title{
-  text-align: center;
-  font-family: "Righteous",cursive;
-  text-shadow: 5px 5px 10px black;
+  border-left:.3rem solid white;
+  padding-left:1rem;
+  text-align: left;
+  font-family: "Play", sans-serif;
 }
 #overview-stats-holder{
   display:flex;
@@ -457,9 +479,10 @@ input::placeholder{
   height:100%;
 }
 .overview-stat{
-  font-family: "Righteous",cursive;
+  font-family: "Play", sans-serif;
   font-size:1.4rem;
   color:rgb(255, 255, 255);
+
 }
 .stat-grey{
   color:rgb(172, 172, 172);
@@ -505,7 +528,7 @@ h4{
   top:-5rem;
 }
 #header-logo{
-  margin-top:.5rem;
+  margin-top:0;
   text-shadow: 5px 5px 10px black;
 }
 .stat-grid{

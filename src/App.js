@@ -135,7 +135,9 @@ class Home extends Component{
     this.state={
       region:'pc-na',
       xbox:false,
-      pc:true
+      pc:true,
+      top10: [],
+      recentSearches: []
     }
   }
   componentWillReceiveProps(newprops){
@@ -149,9 +151,6 @@ class Home extends Component{
         <div id="header-cover">
           <div id="top-accent">
             <div id="network">
-              <div id="statboi-img-container">
-                <img id="statboi-img" src={require('./img/statboi.png')} alt=""/>
-              </div>
 
               <div id="stat-boi-network">
                 <span className="br-tracker">BATTLE ROYALE</span><br />
@@ -170,8 +169,8 @@ class Home extends Component{
             </ul>
         </div>
         <div id="main-title">
-          <h1 id="header-logo">PUBG BOI</h1>
           <p id="subtitle">IT'S A NUMBERS GAME</p>
+          <h1 id="header-logo">PUBG BOI</h1>
         </div>
 
 
@@ -188,8 +187,17 @@ class Home extends Component{
 
     <section id="top-players-section">
      <div id="leaderboards">
-       <div leaderboards-header>
-         <h2>Top Players</h2>
+       <div id="leaderboards-header">
+         <h2 id="top-players-title">TOP PLAYERS</h2>
+       </div>
+       <div id="top-ten">
+       </div>
+
+       <div id="recent-searches">
+        <div id='recent-title'>
+          <span>Recent Searches</span>
+
+        </div>
        </div>
      </div>
     </section>
@@ -302,6 +310,7 @@ class User extends Component{
     super(props);
     this.baseURL="https://api.playbattlegrounds.com/shards";
     this.updateSearch = this.updateSearch.bind(this);
+    this.search = this.search.bind(this);
     this.state={
       rank: 0,
       seasonActive:'Season 5',
@@ -546,9 +555,10 @@ changeFpp(){
 updateSearch(event){
   this.setState({search: event.target.value});
 }
-search(){
-
+search(e){
+  this.props.history.push('/user/'+this.state.search);
 }
+
   render(){
     var winratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins);
     var tenratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].top10s+this.state.player.data.attributes.gameModeStats['solo'].top10s+this.state.player.data.attributes.gameModeStats['duo-fpp'].top10s+this.state.player.data.attributes.gameModeStats['duo'].top10s+this.state.player.data.attributes.gameModeStats['squad-fpp'].top10s+this.state.player.data.attributes.gameModeStats['squad'].top10s);
@@ -571,6 +581,12 @@ search(){
         </div>
         <header id="user-header">
           <div id="top-bar">
+            <div id="user-navbar">
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/" id="nav-home-link">HOME</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/compare" id="compare-nav-link">COMPARE</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">LEADERBOARDS</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">ITEM STATS</Link>
+            </div>
             <div id="logo-container">
             <Link to="/" id="home-link">
               <div id="pubg-boi-logo">
@@ -578,12 +594,7 @@ search(){
               </div>
             </Link>
             </div>
-            <div id="user-navbar">
-              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/" id="nav-home-link">HOME</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/compare" id="compare-nav-link">COMPARE</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">LEADERBOARDS</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">ITEM STATS</Link>
-            </div>
+
           </div>
           <div id="user-search-container">
             <div id="search-form-container">
