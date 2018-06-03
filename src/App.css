@@ -11,6 +11,7 @@ body{
   margin:0;
   height:100vh;
   width:100vw;
+  font-family: 'Sunflower',sans-serif;
 }
 
 /* COLORS */
@@ -26,18 +27,18 @@ body{
 
 /* HEADER */
 .App-header {
-  background-image:url('./img/map.png');
+  background-image:url('./img/map-bg.jpg');
   background-position: center;
-  background-size: 150%;
+  background-size:cover;
+  max-height: 35rem;
   background-color: rgb(50,50,50);
   color: white;
   text-align: center;
 }
 #statboi-img-container{
-  max-width: 4rem;
-  max-height: 4rem;
+  max-width: 2rem;
+  max-height: 2rem;
   margin-right:0;
-  box-sizing: border-box;
 }
 #statboi-img{
   width:100%;
@@ -57,11 +58,32 @@ body{
 
 #top-accent{
   background-color: rgb(46, 46, 46);
-  min-height:.5rem;
+  min-height:6rem;
   padding:.8rem;
   display:flex;
   justify-content: space-between;
-
+}
+#network{
+  display:flex;
+  padding:5px;
+  align-items:flex-start;
+  flex-direction: row;
+}
+.br-tracker{
+  font-size:.5rem;
+  font-weight:bold;
+  color:rgb(144, 235, 36)
+}
+.stat-tracker{
+  font-size:1rem;
+  font-weight: bolder;
+  color:rgb(182, 182, 182)
+}
+#stat-boi-network{
+  display:inline-block;
+  text-align: left;
+  margin-left:1rem;
+  padding:.3rem;
 }
 #bottom-accent{
   background-color: rgb(46, 46, 46);
@@ -72,6 +94,7 @@ body{
   margin-top:0;
   color:yellow;
   text-shadow: 2px 2px 5px black;
+  font-family: 'Play',sans-serif;
 }
 
 /* NAV */
@@ -82,14 +105,20 @@ body{
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.43);
 }
 #nav-links{
-  display:flex;
-  justify-content: flex-start;
+  background-color: rgba(17, 17, 17, 0.4);
+  /* change back to flex */
+  display:none;
+  font-weight: bold;
+  justify-content: space-around;
 }
 .nav-link{
-  padding: 0 .7rem;
+  padding-top:.5rem;
+  padding-bottom:.3rem;
+  font-family: 'Play',sans-serif;
 }
 .nav-active{
   color: yellow;
+  border-bottom:3px solid yellow;
 }
 
 ul{
@@ -101,7 +130,21 @@ ul{
   justify-content: space-around;
   flex-wrap: wrap;
 }
+#platform-search-section{
+  margin-top:2rem;
+  position:relative;
+  top:-5rem;
+}
+#platform-list{
+  width:40%;
+  margin:0 auto;
+}
+.active-region{
+  color:yellow;
+  border-top:4px solid yellow;
+}
 #pc-region-list{
+  width:40%;
   font-size: 1rem;
   color:rgb(170, 170, 170);
   background-color:rgb(80, 80, 80);
@@ -109,6 +152,7 @@ ul{
   padding:.3rem;
 }
 #xbox-region-list{
+  width:40%;
   font-size: 1rem;
   color:rgb(170, 170, 170);
   background-color:rgb(80, 80, 80);
@@ -122,29 +166,43 @@ li{
   padding:.5rem;
 }
 .platform-item{
+  font-size: 1.5rem;
   padding:.5rem;
+  width:50%;
+  box-sizing: border-box;
   font-weight: bold;
+  text-shadow: 5px 5px 10px rgba(62, 62, 62, 0.71);
+  font-family:'Play',sans-serif;
 }
 .selected{
   background-color: yellow;
 }
+.rubik{
+  font-family: 'Rubik',sans-serif;
+}
 h1{
-  font-size: 5rem;
+  font-size: 8rem;
   font-family: 'headliner';
   font-weight: 400;
   letter-spacing:;
   color: yellow;
   margin:0;
 }
+#search-title{
+  font-size:1.5rem;
+  width:60%;
+  margin:0 auto;
+  font-weight: bold;
+  font-family:'Play',sans-serif;
+}
 #search-input{
+  margin-top:.5rem;
   box-sizing: border-box;
-  border: 3px solid rgb(153, 153, 153);
+  border: 3px solid rgb(255, 255, 255);
   background-color:rgb(255, 255, 255);
   height:100%;
-  padding-top:.3rem;
-  padding-bottom:.3rem;
-  padding-left:.8rem;
-  width:60%;
+  padding:1rem 6rem 1rem 2rem;
+  width:80%;
   font-size: 1rem;
   font-weight:bold;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.64);
@@ -154,21 +212,19 @@ h1{
   margin-top: 18rem;
 }
 #search-button{
-  color:black;
-  background-color:yellow;
+  color:rgb(168, 168, 168);
+  background-color: transparent;
   border-style: none;
-  box-sizing:border-box;
-  height: 100%;
-  padding:.3rem;
-  margin:0;
-  width:20%;
+  position: absolute;
+  right:23%;
+  top:25%;
 }
 #search-container{
   margin: 1rem 0;
-  height:4rem;
   box-sizing: border-box;
 }
 #search-form{
+  position: relative;
   height:100%;
   box-sizing: border-box;
 }
@@ -237,6 +293,8 @@ input::placeholder{
   font-size: 1rem;
   padding:1rem;
   box-sizing: border-box;
+  border:2px solid white;
+  box-shadow: 5px 5px 5px rgba(0,0,0,.64)
 }
 #user-search-form{
   margin-top:.5rem;
@@ -250,8 +308,7 @@ input::placeholder{
 }
 #user-search-button{
   position:absolute;
-  right:1.5rem;
-  top:3.3rem;
+  right:2rem;
   background-color: transparent;
   border-style: none;
   color: rgb(110, 110, 110);
@@ -292,7 +349,7 @@ input::placeholder{
 #name-container{
   display:flex;
   flex-direction: row;
-  
+
   overflow: auto;
   padding-top:.5rem;
 }
@@ -442,6 +499,10 @@ input::placeholder{
 h4{
   margin:.5rem;
   text-align: left;
+}
+#main-title{
+  position:relative;
+  top:-5rem;
 }
 #header-logo{
   margin-top:.5rem;

@@ -117,8 +117,8 @@ updateSearch=(event)=>{
             <div id="router">
               <Switch>
                 <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} search={this.state.search} choosePC={this.choosePC} />} />
-                <Route path="/leaderboards" component={Leaderboards} />
-                <Route path="/compare" component={Compare} />
+                <Route path="/leaderboards/" component={Leaderboards} />
+                <Route path="/compare/" render={(props)=><Compare />} />
                 <Route path="/user/:name" render={(props)=><User {...props} search={this.state.search} region={this.state.region} />} />
                 <Route component={Notfound} />
                 </Switch>
@@ -148,11 +148,19 @@ class Home extends Component{
       <header className="App-header">
         <div id="header-cover">
           <div id="top-accent">
-            <div id="statboi-img-container">
-              <img id="statboi-img" src={require('./img/statboi.png')} alt=""/>
+            <div id="network">
+              <div id="statboi-img-container">
+                <img id="statboi-img" src={require('./img/statboi.png')} alt=""/>
+              </div>
+
+              <div id="stat-boi-network">
+                <span className="br-tracker">BATTLE ROYALE</span><br />
+                <span className="stat-tracker">STATISTICS</span>
+              </div>
             </div>
 
-            <div id="stat-boi-network"></div>
+
+
           </div>
             <ul id="nav-links">
               <li className="nav-link nav-active" id="home-link" href="#">HOME</li>
@@ -161,31 +169,66 @@ class Home extends Component{
               <li className="nav-link" id="item-link">ITEM STATS</li>
             </ul>
         </div>
+        <div id="main-title">
           <h1 id="header-logo">PUBG BOI</h1>
           <p id="subtitle">IT'S A NUMBERS GAME</p>
+        </div>
 
 
-          <PlatformSelect chooseXbox={this.props.chooseXbox} choosePC={this.props.choosePC}/>
-          {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} active={this.state.region} />}
-          {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
+          <div id="platform-search-section">
+              <Search history={this.props.history} updatesearch={this.props.updateSearch} runSearch={this.props.runSearch} getPlayer={this.getPlayer} search={this.props.search} />
 
+              {this.state.pc && <PCRegion chooseRegion={this.chooseRegion} active={this.state.region} />}
+              {this.state.xbox && <XboxRegion chooseRegion={this.chooseRegion}/>}
+              <PlatformSelect pc={this.state.pc} chooseXbox={this.props.chooseXbox} choosePC={this.props.choosePC}/>
 
-         <Search history={this.props.history} updatesearch={this.props.updateSearch} runSearch={this.props.runSearch} getPlayer={this.getPlayer} search={this.props.search} />
-         <div id="bottom-accent"></div>
+          </div>
 
     </header>
+
+    <section id="top-players-section">
+     <div id="leaderboards">
+       <div leaderboards-header>
+         <h2>Top Players</h2>
+       </div>
+     </div>
+    </section>
+
+
+
   </div>
     )
   }
 }
 
 class PlatformSelect extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      pc: true
+    }
+  }
+  componentWillReceiveProps(newP){
+    this.setState({pc: newP.pc})
+  }
   render(){
     return(
-        <ul id="platform-list">
-          <li className="platform-item" id="pc" onClick={this.props.choosePC}>PC</li>
-          <li className="platform-item" id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
-        </ul>
+        <div>
+        {this.state.pc &&
+          <ul id="platform-list">
+            <li className="platform-item active-region" id="pc" onClick={this.props.choosePC}>PC</li>
+            <li className="platform-item" id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
+          </ul>
+         }
+
+          {!this.state.pc &&
+            <ul id="platform-list">
+              <li className="platform-item" id="pc" onClick={this.props.choosePC}>PC</li>
+              <li className="platform-item active-region" id="xbox" onClick={this.props.chooseXbox} >XBOX</li>
+            </ul>
+        }
+        </div>
+
     )
   }
 }
@@ -240,10 +283,15 @@ class Search extends Component{
   render(){
     return(
       <div id="search-container">
+        <div id="search-title">FIND YOUR STATS</div>
         <form id="search-form" action="">
           <input id="search-input" type="text" placeholder="PUBG Player Name" value={this.props.search} onChange={this.props.updatesearch}></input>
-          <button id="search-button" action="" onClick={this.runSearch}>GO</button>
+          <button id="search-button" action="" onClick={this.runSearch}>
+            <i className="fas fa-search fa-2x"></i>
+          </button>
         </form>
+        <p>Find by PC Username or Xbox Gamertag</p>
+        <span>Currently Following Players</span>
       </div>
     )
   }
@@ -531,22 +579,21 @@ search(){
             </Link>
             </div>
             <div id="user-navbar">
-              <Link className="navbar-link" style={{padding:'0 .5rem',letterSpacing:'-.1rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/" id="nav-home-link">HOME</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',letterSpacing:'-.1rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/compare" id="compare-nav-link">COMPARE</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',letterSpacing:'-.1rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">LEADERBOARDS</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/" id="nav-home-link">HOME</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/compare" id="compare-nav-link">COMPARE</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">LEADERBOARDS</Link>
+              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">ITEM STATS</Link>
             </div>
           </div>
           <div id="user-search-container">
             <div id="search-form-container">
-              <span id="search-subtitle">SEARCH FOR PLAYER</span>
               <form action="" id="user-search-form">
                 <input id="user-search-input" type="text" placeholder="PUBG Player Name" value={this.state.search} onChange={this.updateSearch} />
                 <button id="user-search-button" onClick={this.search}>
                   <i class="fas fa-search fa-2x"></i>
                 </button>
               </form>
-              <p>Find by PC Username or Xbox Gamertag</p>
-              <span>Currently Following Players</span>
+
             </div>
         </div>
       </header>
@@ -732,6 +779,10 @@ class Solos extends Component{
       }
     }
   }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
+  }
   componentWillReceiveProps(newprops){
     this.setState({data: newprops.data});
   }
@@ -784,6 +835,10 @@ class Duos extends Component{
       }
     }
   }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
+  }
   componentWillReceiveProps(newprops){
     this.setState({data: newprops.data});
   }
@@ -834,6 +889,10 @@ class Squads extends Component{
         winPoints:0
       }
     }
+  }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
   }
   componentWillReceiveProps(newprops){
     this.setState({data: newprops.data});
@@ -886,8 +945,13 @@ class Solosfpp extends Component{
       }
     }
   }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
+  }
   componentWillReceiveProps(newprops){
     this.setState({data: newprops.data});
+    console.log("New Props recieved and state updated.");
   }
   render(){
     return(
@@ -939,6 +1003,10 @@ class Duosfpp extends Component{
         winPoints:0
       }
     }
+  }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
   }
   componentWillReceiveProps(newprops){
     this.setState({data: newprops.data});
@@ -994,6 +1062,10 @@ class Squadsfpp extends Component{
 
       }
     }
+  }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
   }
   componentWillReceiveProps(newprops){
     this.setState({data: newprops.data});
@@ -1084,21 +1156,18 @@ class Stats extends Component{
       }
     }
   }
+  componentDidMount(){
+    this.setState({data: this.props.data});
+    console.log("Component Mounted and state updated.")
+  }
   componentWillReceiveProps(nextProps){
     this.setState({data:nextProps.data});
-    this.data = {
 
-    }
-    this.options={
-
-    }
 
 }
 
 
   render(){
-
-    console.log(this.state.data);
     return(
       <div >
       <div className="stats-container">
@@ -1111,7 +1180,7 @@ class Stats extends Component{
         </div>
 
         <div className="stat-grid">
-          <div className="gird-win-percent">%</div>
+          <div className="grid-win-percent">%</div>
           <div className="grid-kdr">KRD: {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}
             <div id="kdr-chart"></div>
           </div>
