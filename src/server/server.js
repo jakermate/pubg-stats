@@ -9,6 +9,8 @@ const authorization = "Bearer "+ key;
 const nameCache= {
 
 }
+const matchCache={};
+const recent = [];
 const request = require('request');
 
 
@@ -71,6 +73,11 @@ app.get('/user/', function(req,res){
       else{
         objectJSON = JSON.parse(object);
         // namecache crashes server on bad search, must make conditional upon found resource on api side, and error handling
+        let matchNumber = objectJSON.data[0].relationships.matches.data.length;
+        console.log("THERE ARE "+matchNumber+" MATCHES");
+        // This will take matches found on name API call and store them in a cache, indexed with the player ID.  The MATCH component will fetch from this cache in componentDidMount
+        matchCache[objectJSON.data[0].id] = objectJSON.data[0].relationships.matches.data;
+        console.log(matchCache[searchName]);
         nameCache[searchName] = objectJSON.data[0].id;
         console.log(nameCache);
         // dont send until stat/season object is found
@@ -97,8 +104,14 @@ app.get('/user/', function(req,res){
 })
 
 
-app.get('/user/matches',function(req,res){
-  console.log('Fetching Matches.')
+app.get('/matches/:id',function(req,res){
+  let id = req.params.id;
+  console.log(matchCache);
+  console.log('Fetching Matches with id: '+id);
+  let response = matchCache[id];
+  console.log(response);
+  res.send(response);
+
 })
 
 

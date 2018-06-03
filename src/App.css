@@ -210,7 +210,14 @@ h1{
 }
 #placeholder{
   z-index: 400;
-  margin-top: 18rem;
+  margin-top: 24rem;
+  position:absolute;
+  left:0;
+  right:0;
+  text-align: center;
+}
+#loading{
+  min-width:10rem;
 }
 #search-button{
   color:rgb(168, 168, 168);
@@ -543,7 +550,7 @@ h4{
   padding:.5rem;
 }
 .stat-total{
-  font-family: "Righteous",cursive;
+  font-family: "Play",sans-serif;
   font-weight:bold;
   font-size: 2rem;
 }
@@ -551,24 +558,24 @@ h4{
   color:rgb(208, 208, 208)
 }
 .fpp-bold{
-  font-family:"Righteous",cursive;
+  font-family:"Play",sans-serif;
   color:rgb(0, 0, 0);
   font-weight: bold;
 }
 .mode-bold{
-  font-family:"Righteous",cursive;
+  font-family:"Play",sans-serif;
   font-weight:bold;
   font-style: italic;
   color:black;
   text-shadow:2px 2px rgba(255, 255, 255, 0.55);
 }
 .rounds-played{
-  font-family: "Righteous",cursive;
+  font-family: "Play", sans-serif;
   font-size: 1.4rem;
 }
 #modes{
   text-align: center;
-  font-family: "Righteous",cursive;
+  font-family: "Play", sans-serif;
   font-size: 1.4rem;
   margin:0;
   background-color: rgb(68, 68, 68)
@@ -600,11 +607,11 @@ h4{
   display:none;
 }
 #win-top-ratio{
-  font-family: "Righteous",cursive;
+  font-family: "Play", sans-serif;
   font-weight:bold;
 }
 #win-percent{
-  font-family: "Righteous",cursive;
+  font-family: "Play", sans-serif;
   font-weight:bold;
   color:
 }

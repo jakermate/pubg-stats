@@ -311,6 +311,8 @@ class User extends Component{
     this.baseURL="https://api.playbattlegrounds.com/shards";
     this.updateSearch = this.updateSearch.bind(this);
     this.search = this.search.bind(this);
+    this.toMatches = this.toMatches.bind(this);
+    this.toStats = this.toStats.bind(this);
     this.state={
       rank: 0,
       seasonActive:'Season 5',
@@ -549,6 +551,12 @@ changeSeason(e){
   this.setState({season: e.target.value});
   console.log("Season changed to"+this.state.season);
 }
+toMatches(){
+  this.setState({statsActive:false});
+}
+toStats(){
+  this.setState({statsActive:true});
+}
 changeFpp(){
   this.setState({fpp: !this.state.fpp});
 }
@@ -560,6 +568,7 @@ search(e){
 }
 
   render(){
+    console.log(this.state.player);
     var winratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins);
     var tenratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].top10s+this.state.player.data.attributes.gameModeStats['solo'].top10s+this.state.player.data.attributes.gameModeStats['duo-fpp'].top10s+this.state.player.data.attributes.gameModeStats['duo'].top10s+this.state.player.data.attributes.gameModeStats['squad-fpp'].top10s+this.state.player.data.attributes.gameModeStats['squad'].top10s);
     const data={
@@ -619,10 +628,6 @@ search(e){
             <div id="player-info">
               <span id="player-name">{this.userParam}</span><span id="player-region">{this.props.region}</span>
             </div>
-            <div id="player-rank">
-              <p id="pubgboi-rank">{this.state.rank}</p>
-              <p id="rank-subtitle">PUBG BOI RANKING</p>
-            </div>
           </div>
 
           <div id='options'>
@@ -648,15 +653,16 @@ search(e){
           <div id="buffer">
             {this.state.statsActive &&
               <div id="stats-matches-changer">
-                <span id ="stats-active">STATS</span><span id="matches-inactive">MATCHES</span>
+                <span id ="stats-active">STATS</span><span id="matches-inactive" onClick={this.toMatches}>MATCHES</span>
               </div>
             }
             {!this.state.statsActive &&
               <div id="stats-matches-changer">
-                <span id ="stats-inactive">STATS</span>&&<span id="matches-active">MATCHES</span>
+                <span id ="stats-inactive" onClick={this.toStats}>STATS</span><span id="matches-active">MATCHES</span>
               </div>
             }
             </div>
+          {this.state.statsActive &&<div id="stat-page">
           <div id="overview">
             <h2 id="overview-title">{this.state.seasonActive.toUpperCase()} OVERVIEW</h2>
             <div id="overview-stats-holder">
@@ -674,7 +680,7 @@ search(e){
                 <div id="gold-medal-container">
                    <img id="gold-medal" src={require("./img/gold-medal.png")} alt=""/>
                 </div>
-                 <div id="total-wins" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">Wins</span></div>
+                 <div id="total-wins-display" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">Wins</span></div>
               </div>
               <div className="overview-stat-container" id="overview-kills">
                 <div id="kill-graphic">
@@ -716,10 +722,24 @@ search(e){
             {this.state.fpp && <Squadsfpp data={this.state.player.data.attributes.gameModeStats['squad-fpp']} />}
             {!this.state.fpp && <Squads data={this.state.player.data.attributes.gameModeStats['squad']} />}
           </div>
+          </div>
+          }
 
-          </div>}
+          {
+            !this.state.statsActive &&
+            <div id="match-page">
+
+              <Matches id={this.state.player.data.relationships.player.data.id}/>
+
+            </div>
+          }
+
+
+
         </div>
+        }
       </div>
+    </div>
     )
   }
 }
@@ -1103,10 +1123,22 @@ class Matches extends Component{
     this.state={
       matches:[
         {
-          matchID:"dsdaer3qf314r3e"
+
         }
       ]
     }
+  }
+
+  componentDidMount(){
+    // Grab matches from server, stored in matchCache from prior ID call.
+    console.log('Get request with id: '+this.props.id);
+    fetch('/matches/'+this.props.id,{
+      method:'get',
+      headers: new Headers({
+      'Content-Type': 'application/json'
+        })
+    }).then(response=>response.json()).then(json=>console.log(json)).catch(error=>console.log(error));
+
   }
   // Use map function to map matches array into individual Match components
   render(){
@@ -1356,7 +1388,7 @@ class Placeholder extends Component{
   render(){
     return(
       <div id="placeholder">
-        <img src={require('./img/loading.svg')} alt=""/>
+        <img id="loading" src={require('./img/loading.svg')} alt=""/>
       </div>
     )
   }
