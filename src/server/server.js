@@ -65,7 +65,8 @@ app.get('/user/', function(req,res){
       // Set returned json object body to variables to be sennt to client as callback to primary get request handler.
 
       let object = response.body;
-      console.log(body);
+      // Logs entire response containing player name, id, and match relationships
+      // console.log(body);
       if("errors" in JSON.parse(body)){
         console.log("Error from api");
         res.send('ERROR');
@@ -77,11 +78,11 @@ app.get('/user/', function(req,res){
         console.log("THERE ARE "+matchNumber+" MATCHES");
         // This will take matches found on name API call and store them in a cache, indexed with the player ID.  The MATCH component will fetch from this cache in componentDidMount
         matchCache[objectJSON.data[0].id] = objectJSON.data[0].relationships.matches.data;
+        // Logs
         console.log(matchCache[searchName]);
         nameCache[searchName] = objectJSON.data[0].id;
-        console.log(nameCache);
-        // dont send until stat/season object is found
-        // res.json(object);
+        // Logs stored name:id values from recent searches.
+        // console.log(nameCache);
         let options = {
           url: url+"/"+searchRegion+"/players/"+nameCache[searchName]+"/seasons/"+searchSeason,
           method:'get',
@@ -93,7 +94,8 @@ app.get('/user/', function(req,res){
         // Take player ID and season query and use another request to call for player stats from specific season.
         request(options,function(error,response,body){
           object = response.body;
-          console.log(object);
+          // Logs response from API containing specific player:season statistics.
+          // console.log(object);
           if (error){
             throw error;
           }
@@ -103,7 +105,7 @@ app.get('/user/', function(req,res){
     });
 })
 
-
+// Grab all matches from player's season
 app.get('/matches/:id',function(req,res){
   let id = req.params.id;
   console.log(matchCache);
@@ -114,6 +116,62 @@ app.get('/matches/:id',function(req,res){
 
 })
 
+// Grab telemetry for individual match, by match ID
+app.get('/match/:id',function(req,res){
+  let id=req.params.id;
+  console.log('Searching for data from match with ID: '+ id);
+  let options = {
+    url: url+"/pc-na/matches/"+id,
+    method:'get',
+    headers:
+    {
+      'Accept': 'application/json',
+    'Authorization': authorization
+    }
+  }
+  request(options,function(err,response,body){
+    console.log('Recieved match telemetry from API.');
+    // Set match to body string object
+    let match = body;
+    // parse body string to JSON
+    let bodyJSON = JSON.parse(body);
+    // grab event ID from response body object
+    let eventsId = bodyJSON.data.relationships.assets.data[0].id;
+    console.log(eventsId);
+    // Grab path to events json file from array in response object
+    let eventsPath = "";
+    for (var i = 0; i < bodyJSON.included.length; i++){
+      if (bodyJSON.included[i].id == eventsId){
+        eventsPath = bodyJSON.included[i].attributes.URL;
+      }
+    }
+    // Log events ID and path together
+    console.log("Path to events from match: "+id+" is: "+eventsPath);
+    // Now request event object using eventsPath
+
+    // Instead of sending whole match object, build my own object with just the information I need to send.
+    // Build an array of match participants. Determine if solo, squad, or duo. Populate teams by team ID.  Order in array by ranking.
+    let matchType = bodyJSON.data.attributes.gameMode;
+    console.log(matchType);
+    let matchShard = bodyJSON.data.attributes.shardId;
+    console.log(matchShard);
+    let matchMap = bodyJSON.data.attributes.mapName;
+    console.log(matchMap);
+    let matchLength = bodyJSON.data.attributes.duration;
+    console.log("Match lasted: "+(matchLength/60).toFixed(2)+" minutes");
+    let matchRoster = bodyJSON.data.relationships.rosters.data;
+    // It will show up represented as ROSTER IDs, not as player ID. ROSTERS are team ID. Use these ID to find PARTICIPANT names.
+    console.log(matchRoster);
+    // Now loop through the INCLUDED array, which contains both ROSTERS and PARTICPANTS, and create an array for each.
+
+    res.send(match);
+  })
+})
+
+// Grab home page top players, leaderboards, and recent searches data.
+app.get('/home/',function(req,res){
+  console.log('Bundling recent searches, top players, and leaderboards into an object to send to client.');
+})
 
 // Cache Functions
 function addNameToCache(name){

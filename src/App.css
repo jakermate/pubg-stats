@@ -375,6 +375,7 @@ input::placeholder{
   display:flex;
   flex-direction: row;
   padding-top:.5rem;
+  max-height:0rem;
 }
 #player-name{
   font-family: "Play", sans-serif;
@@ -411,28 +412,35 @@ input::placeholder{
 #buffer{
   margin-top:1rem;
   padding:.7rem 0;
-  background-color:rgb(61, 61, 61);
+  background-color:rgb(40, 40, 40);
 }
 #stats-matches-changer{
   display:flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
   font-size: 1.3rem;
-  font-weight: bold;
+  font-weight: bolder;
+  padding:0 1rem;
+
 }
 #stats-active{
   text-shadow: 5px 5px 10px rgba(78, 78, 78, 0.68);
   border-bottom:2px solid white;
+  border-left:2px solid white;
+  padding-left:.3rem;
 }
 #matches-inactive{
-  color:rgb(175, 175, 175)
+  color:rgb(121, 121, 121)
 }
 #matches-active{
   text-shadow: 5px 5px 10px rgba(78, 78, 78, 0.68);
   border-bottom:2px solid white;
+  border-right:2px solid white;
+  padding-right:.3rem;
 }
 #stats-inactive{
-  color:rgb(175, 175, 175)
+  color:rgb(121, 121, 121)
 }
 #overview{
   padding-left:1rem;
@@ -580,7 +588,24 @@ h4{
   margin:0;
   background-color: rgb(68, 68, 68)
 }
-
+/* MATCHES */
+.match{
+  width:90%;
+  padding-top:1rem;
+  min-height:3rem;
+  border-bottom:.3rem solid rgb(98, 98, 98);
+}
+.match-subtitle{
+  padding-left:.3rem;
+  border-left: 2px solid rgb(34, 203, 237);
+  font-size: 1.4rem;
+  font-weight:bold;
+}
+.match-id{
+  font-family: "Play",sans-serif;
+  font-size:1.2rem;
+  margin-top:1rem;
+}
 
 /* CHARTS */
 #total-wins-chart{

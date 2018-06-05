@@ -1137,7 +1137,7 @@ class Matches extends Component{
       headers: new Headers({
       'Content-Type': 'application/json'
         })
-    }).then(response=>response.json()).then(json=>console.log(json)).catch(error=>console.log(error));
+    }).then(response=>response.json()).then(json=>this.setState({matches:json})).catch(error=>console.log(error));
 
   }
   // Use map function to map matches array into individual Match components
@@ -1145,7 +1145,7 @@ class Matches extends Component{
     return(
       <div id="matches-container">
         <ul id="match-list">
-          {this.state.matches.map((match,i)=> <Match key={i} />)}
+          {this.state.matches.map((match,i)=> <Match key={i} match={match} />)}
         </ul>
       </div>
     )
@@ -1153,10 +1153,49 @@ class Matches extends Component{
 
 }
 class Match extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      match:{
+        id:''
+      }
+    }
+    this.fetchMatch = this.fetchMatch.bind(this);
+  }
+  fetchMatch(){
+    console.log("Sending match request to server with ID: " + this.state.match.id);
+  }
   render(){
     return(
       <div className="match">
+        <span className="match-subtitle">Match ID:</span>
+        <p className="match-id" onClick={this.fetchMatch}>{this.props.match.id}</p>
+      </div>
+    )
+  }
+}
+class MatchTelem extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      match: {
 
+      }
+    }
+  }
+  componentDidMount(){
+    // fetch match telemetry from server
+    fetch('/match/'+this.props.id,{
+      method:'get',
+      headers: new Headers(
+        'Content-Type': 'application/json'
+      )
+    });
+  }
+  render(){
+    return(
+
+      <div className="match-expanded">
       </div>
     )
   }
