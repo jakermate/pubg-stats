@@ -191,19 +191,34 @@ app.get('/match/:id',function(req,res){
       newList[each.attributes.stats.teamId] = {};
       newList[each.attributes.stats.teamId].players = each.relationships.participants.data;
       newList[each.attributes.stats.teamId].rank = each.attributes.stats.rank;
-
-
     })
+
+    for(var team in newList){
+      newList[team].team = [];
+
+    }
+    playerList.forEach(function(stats){
+      for(var each in newList){
+        let playerArray=newList[each].players;
+        playerArray.forEach(function(player){
+          let id = stats['participantId'];
+
+          if(id == player.id){
+            (newList[each].team).push(stats);
+          }
+        })
+    }})
     console.log(newList);
     let matchResponse = {};
     matchResponse.teams = newList;
-    matchResponse.players = playerList;
     matchResponse.stats = {};
     matchResponse.stats.duration = matchLength;
     matchResponse.stats.map = matchMap;
     matchResponse.stats.mode = matchType;
     matchResponse.stats.region = matchShard;
-    console.log(matchResponse);
+
+    // End of individual match request (by ID)
+    // Now returns an object containing: array of player names and stats, array of player ids in each team roster, team ranks, mapname, game mode, and duration
     res.send(matchResponse);
   })
 })

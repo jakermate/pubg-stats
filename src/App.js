@@ -1159,19 +1159,26 @@ class Match extends Component{
     super(props);
     this.state={
       match:{
-        id:''
+        id: this.props.match.id
       }
     }
     this.fetchMatch = this.fetchMatch.bind(this);
   }
   fetchMatch(){
     console.log("Sending match request to server with ID: " + this.state.match.id);
+    // Add fetch to server @ /match/:id
+    fetch('/match/'+this.state.match.id,{
+      method:'get',
+      headers: new Headers({
+      'Content-Type': 'application/json'
+      })
+    }).then(res=>res.json()).then(json=>console.log(json))
   }
   render(){
     return(
       <div className="match">
         <span className="match-subtitle">Match ID:</span>
-        <p className="match-id" onClick={this.fetchMatch}>{this.props.match.id}</p>
+        <p className="match-id" onClick={this.fetchMatch}>Fetch Match: {this.props.match.id}</p>
       </div>
     )
   }
