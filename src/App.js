@@ -674,6 +674,7 @@ search(e){
                 <div className="overview-stat stat-margin">
                    {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} <span className="stat-grey">Rounds</span>
                  </div>
+
               </div>
 
               <div id="total-wins" className="overview-stat-container overview-stat">
@@ -693,6 +694,7 @@ search(e){
               </div>
               <div id="chart-container" className="overview-stat-container">
                 <ChartistGraph data={data} options={options} type={type} />
+                <progress value={winratio} max={tenratio}></progress>
                 <span id="win-percent" className="stat-grey">Wins <span className="overview-stat">{((winratio/tenratio)*100).toFixed(1)}%</span> of Top 10 Scenarios</span><br />
 
               </div>

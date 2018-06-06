@@ -163,8 +163,48 @@ app.get('/match/:id',function(req,res){
     // It will show up represented as ROSTER IDs, not as player ID. ROSTERS are team ID. Use these ID to find PARTICIPANT names.
     console.log(matchRoster);
     // Now loop through the INCLUDED array, which contains both ROSTERS and PARTICPANTS, and create an array for each.
+    let participants = bodyJSON.included;
+    // Create playerList, an array of each individual player in the match.  Each array object has partId, playerId, name, and match stats.
+    let playerList = [];
+    for (var i = 0; i < participants.length; i++){
+      if (participants[i].type == 'participant'){
+        playerList.push({
+          participantId: participants[i].id,
+          name: participants[i].attributes.stats.name,
+          playerId: participants[i].attributes.stats.playerId,
+          stats: participants[i].attributes.stats
+        })
+      }
+    }
+    console.log('playerList is now populated with a list of '+playerList.length+" player's from the match.");
+    // Determine teams
 
-    res.send(match);
+    let teamList = [];
+    participants.forEach(function(each){
+      if (each.type == "roster"){
+        teamList.push(each);
+      }
+    })
+    console.log(teamList);
+    let newList = {};
+    teamList.forEach(function(each){
+      newList[each.attributes.stats.teamId] = {};
+      newList[each.attributes.stats.teamId].players = each.relationships.participants.data;
+      newList[each.attributes.stats.teamId].rank = each.attributes.stats.rank;
+
+
+    })
+    console.log(newList);
+    let matchResponse = {};
+    matchResponse.teams = newList;
+    matchResponse.players = playerList;
+    matchResponse.stats = {};
+    matchResponse.stats.duration = matchLength;
+    matchResponse.stats.map = matchMap;
+    matchResponse.stats.mode = matchType;
+    matchResponse.stats.region = matchShard;
+    console.log(matchResponse);
+    res.send(matchResponse);
   })
 })
 
