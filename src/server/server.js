@@ -32,10 +32,11 @@ app.use(function(err,req,res,next){
 })
 
 
-// Requests
-// Check for user ID on server
-app.get('/search/:name',function(req,res){
+// REQUESTS
 
+// get recent searches
+app.get('/recent/',function(req,res){
+  res.send(nameCache);
 })
 
 //User search comes in with NAME string, will need to add a search for name in cache before quering API, but for now it will pass the name search directly to the api.
@@ -66,7 +67,7 @@ app.get('/user/', function(req,res){
 
       let object = response.body;
       // Logs entire response containing player name, id, and match relationships
-      // console.log(body);
+      console.log(body);
       if("errors" in JSON.parse(body)){
         console.log("Error from api");
         res.send('ERROR');
@@ -79,7 +80,7 @@ app.get('/user/', function(req,res){
         // This will take matches found on name API call and store them in a cache, indexed with the player ID.  The MATCH component will fetch from this cache in componentDidMount
         matchCache[objectJSON.data[0].id] = objectJSON.data[0].relationships.matches.data;
         // Logs
-        console.log(matchCache[searchName]);
+        console.log(matchCache[objectJSON.data[0].id]);
         nameCache[searchName] = objectJSON.data[0].id;
         // Logs stored name:id values from recent searches.
         // console.log(nameCache);

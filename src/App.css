@@ -11,11 +11,23 @@ body{
   background-color:#222;
   color:white;
   margin:0;
-  height:100vh;
-  width:100vw;
+
+  height:100%;
+  width:100%;
   font-family: 'Sunflower',sans-serif;
 }
 
+/* General */
+progress{
+  background-color:rgb(47, 47, 47);
+}
+progress[value]{
+  background-color:rgb(101, 240, 6)
+}
+a{
+  color:yellow;
+  text-decoration: none;
+}
 /* COLORS */
 .bg-orange{
   background-color: #ffc485;
@@ -225,7 +237,7 @@ h1{
   border-style: none;
   position:absolute;
   right:12%;
-  top:33%;
+  top:40%;
 }
 #search-container{
   margin: 1rem 0;
@@ -253,10 +265,18 @@ input::placeholder{
 #leaderboards-header{
 
 }
+#leaderboards{
+  padding-bottom:.7rem;
+}
+.recent-player{
+  padding:.2rem;
+  margin-left:1rem;
+}
 #top-players-title{
   color:rgb(232, 176, 38);
   padding:1rem;
   border-left: .3rem solid rgb(173, 137, 15);
+  margin-bottom:0;
 }
 
 /* USER */
@@ -291,9 +311,9 @@ input::placeholder{
 }
 #user-header-bg{
   display:block;
-  background-image: url('img/pubg-bg2.jpg');
+  background-image: url('img/pubg-bg3.jpg');
   position: absolute;
-  height: 16rem;
+  height: 24rem;
   box-sizing: border-box;
   background-position: center;
   background-size: cover;
@@ -301,17 +321,21 @@ input::placeholder{
   right:0;
   top:0;
   left:0;
-  border-bottom:5px solid rgb(103, 103, 103);
+  border-bottom:5px solid rgb(38, 38, 38);
 }
 #user-search-container{
   display:flex;
   flex-direction: column;
   justify-content: space-around;
   width:100%;
-  padding:1.2rem;
+  margin-top:1.2rem;
+  padding-left:1.2rem;
+  padding-right:1.2rem;
+  padding-bottom:1.2rem;
+
   box-sizing: border-box;
   position: relative;
-  top:-3rem;
+  top:-2rem;
 }
 #user-search-input{
   width:100%;
@@ -352,13 +376,24 @@ input::placeholder{
   display:flex;
   flex-direction:row;
   justify-content: space-between;
+  max-width:1000px;
+  margin:0 auto;
+}
+#user-content{
+  max-width:1100px;
+  margin:0 auto;
 }
 #user-info{
-  background-color:rgb(124, 124, 124);
+  background-color:rgb(54, 54, 54);
   margin-top:16rem;
   z-index: 10;
   width:100%;
-  position:absolute;
+  position:relative;
+  max-width:1100px;
+  margin-left:auto;
+  margin-right:auto;
+  left:0;
+  right:0;
 }
 .avatar{
   height:4rem;
@@ -417,7 +452,7 @@ input::placeholder{
 #stats-matches-changer{
   display:flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   font-size: 1.3rem;
   font-weight: bolder;
@@ -426,18 +461,20 @@ input::placeholder{
 }
 #stats-active{
   text-shadow: 5px 5px 10px rgba(78, 78, 78, 0.68);
-  border-bottom:2px solid white;
-  border-left:2px solid white;
+  border-bottom:2px solid rgb(11, 181, 173);
+  border-left:4px solid rgb(11, 181, 173);
   padding-left:.3rem;
 }
 #matches-inactive{
+  margin-left:1rem;
   color:rgb(121, 121, 121)
 }
 #matches-active{
+  margin-left:1rem;
   text-shadow: 5px 5px 10px rgba(78, 78, 78, 0.68);
-  border-bottom:2px solid white;
-  border-right:2px solid white;
-  padding-right:.3rem;
+  border-bottom:2px solid rgb(11, 181, 173);
+  border-left:4px solid rgb(11, 181, 173);
+  padding-left:.3rem;
 }
 #stats-inactive{
   color:rgb(121, 121, 121)
@@ -445,12 +482,12 @@ input::placeholder{
 #overview{
   padding-left:1rem;
   padding-right:1rem;
-  background-color:rgb(82, 82, 82);
+  background-color:rgb(38, 38, 38);
   overflow:auto;
 
 }
 #overview-title{
-  border-left:.3rem solid white;
+  border-left:.3rem solid rgb(11, 181, 173);
   padding-left:1rem;
   text-align: left;
   font-family: "Play", sans-serif;
@@ -531,7 +568,7 @@ input::placeholder{
   box-sizing: border-box;
 }
 .stats-container{
-  background-color: rgb(157,157,157);
+  background-color: rgb(36, 36, 36);
   padding: 1rem;
 }
 h4{
@@ -545,7 +582,9 @@ h4{
 #header-logo{
   margin-top:0;
   text-shadow: 5px 5px 10px black;
+  color:yellow;
 }
+
 .stat-grid{
   display:grid;
   grid-template-columns:1fr;
@@ -575,7 +614,10 @@ h4{
   font-weight:bold;
   font-style: italic;
   color:black;
-  text-shadow:2px 2px rgba(255, 255, 255, 0.55);
+
+}
+.rounds-horiz{
+  vertical-align: middle;
 }
 .rounds-played{
   font-family: "Play", sans-serif;
@@ -589,24 +631,123 @@ h4{
   background-color: rgb(68, 68, 68)
 }
 /* MATCHES */
+#match-page{
+  background-color: rgb(38, 38, 38)
+}
+.match-access{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .match{
-  width:90%;
+  width:95%;
   padding-top:1rem;
   min-height:3rem;
   border-bottom:.3rem solid rgb(98, 98, 98);
+}
+.match-stats{
+  margin-top:0;
+}
+.team-dropdown{
+  padding:1rem;
+}
+.player-stats{
+  margin-bottom:.5rem;
+  width: 40%;
+}
+.breakdown-title{
+  font-size:1.5rem;
+  font-weight:bold;
+}
+.team-container{
+  display:flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+}
+.match-header{
+  background-position: center;
+  background-size: cover;
+  overflow: auto;
+  padding:2rem;
+}
+.game-info{
+
+}
+.match-expanded{
+  border:2px solid rgb(55, 51, 54)
 }
 .match-subtitle{
   padding-left:.3rem;
   border-left: 2px solid rgb(34, 203, 237);
   font-size: 1.4rem;
   font-weight:bold;
+
+}
+.flex{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.players-bar{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-width:40%;
+}
+.team-expand-tab{
+  margin-right:2rem;
+}
+.rankings{
+
+}
+.match-rankings-title{
+  font-size:2rem;
+  padding-left:1rem;
+  padding-top: .3rem;
+  padding-bottom: .3rem;
+  overflow: auto;
+  border-left:4px solid rgb(223, 117, 32)
+}
+.team-ranking{
+  margin-left:1rem;
+  margin-top:.8rem;
+}
+.game-mode{
+  font-size:1.2rem;
+  font-weight:bold;
+}
+.map-name{
+  font-size:2rem;
+  margin-top:0;
+}
+.minutes{
+  font-weight:bold;
+  font-size: 1.4rem;
+}
+.seconds{
+  font-size:.8rem;
 }
 .match-id{
   font-family: "Play",sans-serif;
   font-size:1.2rem;
-  margin-top:1rem;
+  font-weight:bold;
+  padding:.5rem;
+  margin-left:1rem;
 }
+#match-stats{
 
+}
+.rank{
+  border-left: 4px solid rgb(232, 155, 12);
+  padding-left:1rem;
+  font-weight:bold;
+  font-size:1.2rem;
+  min-width:5%;
+}
+.player-list{
+
+
+}
 /* CHARTS */
 #total-wins-chart{
   width:100%;
@@ -639,4 +780,26 @@ h4{
   font-family: "Play", sans-serif;
   font-weight:bold;
   color:
+}
+
+/* Errors */
+#not-found-component{
+  position:absolute;
+  left:0;
+  right:0;
+  top:18rem;
+  padding: 0 5rem;
+  font-size:1.4rem;
+}
+
+
+
+
+
+
+/* MEDIA Q */
+@media (max-width:350px){
+  html{
+    font-size: 12px;
+  }
 }
