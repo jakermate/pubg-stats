@@ -12,6 +12,7 @@ const nameCache= {
 const matchCache={};
 const recent = [];
 const request = require('request');
+const cache = require('memory-cache');
 
 
 app.listen(port,function(){
@@ -44,66 +45,92 @@ app.get('/user/', function(req,res){
     console.log('Get request recieved.');
     const that = this;
     console.log('Recieved request from client.');
+    let getCacheKeys = cache.keys();
+    console.log('The cache is holding these keys: '+getCacheKeys);
     console.log('Name query: '+req.query.name);
     const searchSeason = req.query.season;
     const searchName = req.query.name;
     const searchRegion = req.query.region;
-    const response = {};
-    const apiNameSearch = url + "/"+searchRegion+"/players?filter[playerNames]="+searchName;
-    console.log("Sending request to :"+apiNameSearch);
-    // Sets options for get request to PUBG API
-    const nameOptions = {
-      url: apiNameSearch,
-      method:'get',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': authorization
+    // create new cache key for incoming response
+    let reqCacheKey = searchName+searchSeason+searchRegion;
+    // list all keys inside cache
+    console.log('New cache key created: '+reqCacheKey);
+    // check if key is already placed in cache (15 minute timeout)
+    let checkCache = cache.get(reqCacheKey);
+    // checks if value is cached for the key created from the new get requests.
+    // If the value is found (!null), the corresponding value is sent back to the client without contacting the API server.
+    if (checkCache != null){
+      let response = checkCache;
+      console.log(response);
+      res.send(response);
+    }
+    // If the key/value pair is not found in the Cache in the check above, the else statement handles sending the request onto the PUBG api, and receives a new response object.  This object will then be stored with the key reqCacheKey in the cache.
+    else{
+      const response = {};
+      const apiNameSearch = url + "/"+searchRegion+"/players?filter[playerNames]="+searchName;
+      console.log("Sending request to :"+apiNameSearch);
+      // Sets options for get request to PUBG API
+      const nameOptions = {
+        url: apiNameSearch,
+        method:'get',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': authorization
+        }
       }
+
+      // Sends request to API
+      request(nameOptions,function(error,response,body){
+        // Set returned json object body to variables to be sennt to client as callback to primary get request handler.
+
+        let object = response.body;
+        // Logs entire response containing player name, id, and match relationships
+        console.log(body);
+        if("errors" in JSON.parse(body)){
+          console.log("Error from api");
+          let error={'error':true}
+          res.send(error);
+        }
+        else{
+          objectJSON = JSON.parse(object);
+          // namecache crashes server on bad search, must make conditional upon found resource on api side, and error handling
+          let matchNumber = objectJSON.data[0].relationships.matches.data.length;
+          console.log("THERE ARE "+matchNumber+" MATCHES");
+          // This will take matches found on name API call and store them in a cache, indexed with the player ID.  The MATCH component will fetch from this cache in componentDidMount
+          matchCache[objectJSON.data[0].id] = objectJSON.data[0].relationships.matches.data;
+          // Logs
+          console.log(matchCache[objectJSON.data[0].id]);
+          nameCache[searchName] = objectJSON.data[0].id;
+          // Logs stored name:id values from recent searches.
+          // console.log(nameCache);
+          let options = {
+            url: url+"/"+searchRegion+"/players/"+nameCache[searchName]+"/seasons/"+searchSeason,
+            method:'get',
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': authorization
+            }
+          }
+          // Take player ID and season query and use another request to call for player stats from specific season.
+          request(options,function(error,response,body){
+            object = response.body;
+            // Logs response from API containing specific player:season statistics.
+            if (error){
+              throw error;
+            }
+            // make custom response object
+            let objectJSON = JSON.parse(object);
+            objectJSON['name'] = searchName;
+            console.log(objectJSON.name);
+            // Store the response object with the key created from the incoming get request string in the cache.  15 minute timeout.
+            cache.put(reqCacheKey,objectJSON, 900000);
+            console.log('Response added to cache under key: '+reqCacheKey);
+            res.send(objectJSON);
+          })
+        }
+      });
     }
 
-    // Sends request to API
-    request(nameOptions,function(error,response,body){
-      // Set returned json object body to variables to be sennt to client as callback to primary get request handler.
-
-      let object = response.body;
-      // Logs entire response containing player name, id, and match relationships
-      console.log(body);
-      if("errors" in JSON.parse(body)){
-        console.log("Error from api");
-        res.send('ERROR');
-      }
-      else{
-        objectJSON = JSON.parse(object);
-        // namecache crashes server on bad search, must make conditional upon found resource on api side, and error handling
-        let matchNumber = objectJSON.data[0].relationships.matches.data.length;
-        console.log("THERE ARE "+matchNumber+" MATCHES");
-        // This will take matches found on name API call and store them in a cache, indexed with the player ID.  The MATCH component will fetch from this cache in componentDidMount
-        matchCache[objectJSON.data[0].id] = objectJSON.data[0].relationships.matches.data;
-        // Logs
-        console.log(matchCache[objectJSON.data[0].id]);
-        nameCache[searchName] = objectJSON.data[0].id;
-        // Logs stored name:id values from recent searches.
-        // console.log(nameCache);
-        let options = {
-          url: url+"/"+searchRegion+"/players/"+nameCache[searchName]+"/seasons/"+searchSeason,
-          method:'get',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': authorization
-          }
-        }
-        // Take player ID and season query and use another request to call for player stats from specific season.
-        request(options,function(error,response,body){
-          object = response.body;
-          // Logs response from API containing specific player:season statistics.
-          // console.log(object);
-          if (error){
-            throw error;
-          }
-          res.send(object);
-        })
-      }
-    });
 })
 
 // Grab all matches from player's season
