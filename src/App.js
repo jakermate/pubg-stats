@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
-
+import {Doughnut} from 'react-chartjs-2';
 
 
 class App extends Component {
@@ -78,7 +78,7 @@ updateSearch=(event)=>{
               <Switch>
                 <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox}  region={this.state.region} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} search={this.state.search} choosePC={this.choosePC} chooseRegion={this.chooseRegion} />} />
                 <Route path="/leaderboards/" component={Leaderboards} />
-                <Route path="/compare/" render={(props)=><Compare />} />
+                <Route path="/compare/:name?" render={(props)=><Compare {...props}  />} />
                 <Route path="/user/:name" render={(props)=><User {...props} search={this.state.search} region={this.state.region} />} />
                 <Route component={ErrorPage} />
                 </Switch>
@@ -275,6 +275,7 @@ class Search extends Component{
             <i className="fas fa-search fa-2x"></i>
           </button>
         </form>
+        <div id="or-compare"><Link to="/compare/">OR COMPARE TWO PLAYERS</Link></div>
         <p>Find by PC Username or Xbox Gamertag</p>
         <span>Currently Following {this.props.recentPlayers.length} Players</span>
       </div>
@@ -290,6 +291,8 @@ class User extends Component{
     this.search = this.search.bind(this);
     this.toMatches = this.toMatches.bind(this);
     this.toStats = this.toStats.bind(this);
+    this.changeMode=this.changeMode.bind(this);
+    this.compareTo = this.compareTo.bind(this);
     this.state={
       rank: 0,
       seasonActive:'Season 6',
@@ -527,6 +530,12 @@ componentDidMount(){
 changeSeason(e){
   this.setState({season: e.target.value,seasonActive: "Season "+(e.target.value).slice(-1)});
   console.log("Season changed to"+this.state.season);
+  fetch('/user/?name='+this.userParam+'&region='+this.region+"&season="+e.target.value,{
+    method:'get',
+    headers: new Headers({
+      "Content-Type": 'application/json'
+    })
+  }).then(res=>res.json()).then(json=>this.setState({player: json})).catch(error=>console.log(error))
 }
 toMatches(){
   this.setState({statsActive:false});
@@ -534,7 +543,7 @@ toMatches(){
 toStats(){
   this.setState({statsActive:true});
 }
-changeFpp(){
+changeMode(){
   this.setState({fpp: !this.state.fpp});
 }
 updateSearch(event){
@@ -543,7 +552,10 @@ updateSearch(event){
 search(e){
   this.props.history.push('/user/'+this.state.search);
 }
+compareTo(){
+  this.props.history.push('/compare/'+this.userParam);
 
+}
   render(){
 
     var winratio = (this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins);
@@ -559,19 +571,22 @@ search(e){
         </div>
         <header id="user-header">
           <div id="top-bar">
+          <div id="network">
+
+            <div id="stat-boi-network">
+              <span className="br-tracker">BATTLE ROYALE</span><br />
+              <span className="stat-tracker">STATISTICS</span>
+            </div>
+          </div>
           <div id="logo-container">
           <Link to="/" id="home-link">
-            <div id="pubg-boi-logo">
-              <img id="logo" src={require('./img/pubgboi-logo.png')} alt=""/>
-            </div>
+            <div id="user-logo">PUBG BOI</div>
           </Link>
           </div>
 
             <div id="user-navbar">
               <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/" id="nav-home-link">HOME</Link>
               <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/compare" id="compare-nav-link">COMPARE</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">LEADERBOARDS</Link>
-              <Link className="navbar-link" style={{padding:'0 .5rem',fontSize:'1rem',textDecoration:'none',color:'white',fontWeight:'bold'}} to="/leaderboards" id="leaderboards-nav-link">ITEM STATS</Link>
             </div>
 
           </div>
@@ -598,6 +613,7 @@ search(e){
             <div id="player-info">
               <span id="player-name">{this.userParam}</span><span id="player-region">{this.props.region}</span>
             </div>
+            <div id="compare-to" onClick={this.compareTo}>COMPARE WITH {this.userParam.toUpperCase()}... </div>
           </div>
 
           <div id='options'>
@@ -640,28 +656,25 @@ search(e){
               <div id="total-rounds" className="overview-stat-container">
 
                 <div className="overview-stat stat-margin">
-                   {this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed} <span className="stat-grey">Rounds</span>
+                   <span className="bolden">{this.state.player.data.attributes.gameModeStats['solo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['solo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['duo'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad-fpp'].roundsPlayed+this.state.player.data.attributes.gameModeStats['squad'].roundsPlayed}</span> <span className="stat-grey">Rounds</span>
                  </div>
 
               </div>
 
               <div id="total-wins" className="overview-stat-container overview-stat">
 
-                 <div id="total-wins-display" className="stat-margin">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins} <span className="stat-grey">Wins</span></div>
+                 <div id="total-wins-display" className="stat-margin">
+                 <span className="bolden">{this.state.player.data.attributes.gameModeStats['solo-fpp'].wins+this.state.player.data.attributes.gameModeStats['solo'].wins+this.state.player.data.attributes.gameModeStats['duo-fpp'].wins+this.state.player.data.attributes.gameModeStats['duo'].wins+this.state.player.data.attributes.gameModeStats['squad-fpp'].wins+this.state.player.data.attributes.gameModeStats['squad'].wins}</span> <span className="stat-grey">Wins</span></div>
               </div>
               <div className="overview-stat-container" id="overview-kills">
 
                 <div id="total-kills" className="stat-margin overview-stat">
-                  {this.state.player.data.attributes.gameModeStats['solo-fpp'].kills+this.state.player.data.attributes.gameModeStats['solo'].kills+this.state.player.data.attributes.gameModeStats['duo-fpp'].kills+this.state.player.data.attributes.gameModeStats['duo'].kills+this.state.player.data.attributes.gameModeStats['squad-fpp'].kills+this.state.player.data.attributes.gameModeStats['squad'].kills}
+                  <span className="bolden">{this.state.player.data.attributes.gameModeStats['solo-fpp'].kills+this.state.player.data.attributes.gameModeStats['solo'].kills+this.state.player.data.attributes.gameModeStats['duo-fpp'].kills+this.state.player.data.attributes.gameModeStats['duo'].kills+this.state.player.data.attributes.gameModeStats['squad-fpp'].kills+this.state.player.data.attributes.gameModeStats['squad'].kills}</span>
                   <span className="stat-grey"> Kills</span>
                 </div>
               </div>
-              <span id="win-percent" className="stat-grey">Wins <span className="overview-stat">{((winratio/tenratio)*100).toFixed(1)}%</span> of Top 10 Scenarios</span><br />
-              <div className="overview-stat-container">
-                <span ></span>
-              </div>
 
-
+              <div id="win-percent" className="stat-grey overview-stat-container">Wins <span className="overview-stat">{((winratio/tenratio)*100).toFixed(1)}%</span> of Top 10 Scenarios</div>
 
             </div>
 
@@ -674,6 +687,19 @@ search(e){
 
 
           </div>
+
+          {this.state.fpp && <div id="fpp-changer">
+            <div id="fpp-changer-inner">
+              <span className="mode-active">FPP </span>
+              <span onClick={this.changeMode}>| TPP</span>
+            </div>
+          </div>}
+          {!this.state.fpp && <div id="fpp-changer">
+            <div id="fpp-changer-inner">
+              <span onClick={this.changeMode}>FPP |</span>
+              <span className="mode-active"> TPP</span>
+            </div>
+          </div>}
 
           <div id="modes-container">
             {this.state.fpp && <Solosfpp data={this.state.player.data.attributes.gameModeStats['solo-fpp']} />}
@@ -1083,9 +1109,7 @@ class Matches extends Component{
     super();
     this.state={
       matches:[
-        {
 
-        }
       ]
     }
   }
@@ -1105,6 +1129,7 @@ class Matches extends Component{
   render(){
     return(
       <div id="matches-container">
+        <div>Matches Played (By Most Recent)</div>
         <ul id="match-list">
           {this.state.matches.map((match,i)=> <Match key={i} match={match} />)}
         </ul>
@@ -1156,6 +1181,7 @@ class Match extends Component{
           {!this.state.recieved && <button className="match-id" onClick={this.fetchMatch}>
           View Match
           </button>}
+          {this.state.recieved && <i className="fas fa-caret-down fa-lg" style={{marginRight:'1rem'}}></i>}
         </div>
         {this.state.recieved && <MatchStats match={this.state.match} />}
       </div>
@@ -1221,7 +1247,7 @@ class MatchStats extends Component{
           <div className="rankings">
             <div className="match-rankings-title">Final Rankings</div>
             {teamsOrdered.map((team)=>
-              <Team team={team} />
+              <Team className="alt-bg" team={team} />
             )}
           </div>
         </div>
@@ -1250,7 +1276,7 @@ class Team extends Component{
           </div>
           <div className="players-bar">
             <span className="player-list">{this.state.team.team.map((player)=>
-                <span>| {player.name} </span>
+                <span>|  {player.name} </span>
             )}</span>
           </div>
           <span className="team-expand-tab"><i className="fas fa-caret-down fa-lg"></i></span>
@@ -1262,19 +1288,46 @@ class Team extends Component{
             <div className="team-container">
             {this.state.team.team.map((player)=>
               <div className="player-stats">
-                {player.name}
-                <div>
+                <span className="bolden">{player.name}</span>
+                <div style={{marginLeft:'.5rem',marginTop:'.3rem'}}>
                   <div>
-                    Points<br />
-                    {player.stats.winPoints}
+                    <span className="stat-grey">Points  </span>
+                    <span className="stat-bold">{player.stats.winPoints}</span>
                   </div>
                   <div>
-                    Kills<br />
-                    {player.stats.kills}
+                    <span className="stat-grey">Kills  </span> <span className="stat-bold">{player.stats.kills}</span>
                   </div>
                   <div>
-                  Headshot Kills<br />
-                  {player.stats.headshotKills}
+                  <span className="stat-grey">Headshot Kills  </span>
+                  <span className="stat-bold">{player.stats.headshotKills}</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Damage Dealt  </span>
+                  <span className="stat-bold">{player.stats.damageDealt.toFixed(1)}</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Boosts Used  </span>
+                  <span className="stat-bold">{player.stats.boosts}</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Kill Rank  </span>
+                  <span className="stat-bold">{player.stats.killPlace}</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Down But Not Outs  </span>
+                  <span className="stat-bold">{player.stats.DBNOs}</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Revives  </span>
+                  <span className="stat-bold">{player.stats.revives}</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Distance On Foot  </span>
+                  <span className="stat-bold">{player.stats.walkDistance.toFixed(2)} m</span>
+                  </div>
+                  <div>
+                  <span className="stat-grey">Distance By Vehicle  </span>
+                  <span className="stat-bold">{player.stats.rideDistance.toFixed(2)} m</span>
                   </div>
                 </div>
               </div>
@@ -1341,59 +1394,73 @@ class Stats extends Component{
 
   render(){
     return(
-      <div >
-      <div className="stats-container">
-        <div id="wins">
-          <img className="gold-medal" src="img/gold-medal.svg" alt=""/>
-          <span>{this.state.data.wins} Wins</span>
-        </div>
-        <div id="top-10">
-          <span>{this.state.data.top10s} Top Tens</span>
-        </div>
+      <div>
+        {this.state.data.roundsPlayed==0 && <NoRounds />}
+        {this.state.data.roundsPlayed!=0 && <div className="stats-container">
 
-        <div className="stat-grid">
-          <div className="grid-win-percent">%</div>
-          <div className="grid-kdr">KRD: {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}
-            <div id="kdr-chart"></div>
-          </div>
-          <div className="grid-top-ten grid-unit">
-            <div id="top-ten-total" className="stat-total">{this.state.data.top10s}</div>
-            <div id="top-ten-subtitle" className="stat-subtitle">Top 10s</div>
-          </div>
-          <div className="grid-kill-per-game grid-unit">
-            <div id="kill-er-game-total" className="stat-total">{(this.state.data.kills/this.state.data.roundsPlayed).toFixed(1)}</div>
-            <div id="kills-per-game-subtitle" className="stat-subtitle">Kills/Game</div>
-            <div id="kills-per-game-graphic"></div>
-          </div>
-          <div className="grid-headshots grid-unit">
-          <div id="headshots-total" className="stat-total"></div>
-            <div id="headshots-subtitle" className="stat-subtitle">% of Kills as Headshots</div>
-            <div id="headshots-graphic"></div>
-          </div>
-          <div className="grid-max-streak grid-unit">
-            <div id="kill-streak-total" className="stat-total">{this.state.data.roundMostKills}</div>
-            <div id="kill-streak-subtitle" className="stat-subtitle">Longest Kill Streak</div>
-            <div id="kill-streak-graphic"></div>
-          </div>
-          <div className="grid-longest-kill grid-unit">
-            <div id="longest-kill-total" className="stat-total">{this.state.data.longestKill.toFixed(1)} m.</div>
-            <div id="longest-kill-subtitle" className="stat-subtitle">Farthest Distance Kill</div>
-            <div id="longest-kill-graphic">
-            <span>That's {(this.state.data.longestKill/109.1).toFixed(1)} football fields.</span>
+          <div className="stat-grid">
+            <div id="wins" className="grid-unit">
+              <div className="stat-total">{this.state.data.wins}</div>
+              <div className="stat-subtitle">Wins</div>
+            </div>
+            <div id="top-10" className="grid-unit">
+              <div className="stat-total">{this.state.data.top10s}</div>
+              <div className="stat-subtitle">Top 10s</div>
+            </div>
+            <div className="grid-win-percent grid-unit">
+              <div className="stat-total">{(((this.state.data.wins)/(this.state.data.roundsPlayed))*100).toFixed(1)}</div>
+              <div className="stat-subtitle">% of Rounds Won</div>
+            </div>
+            <div className="grid-kdr grid-unit">
+              <div className="stat-total">
+               {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}
+              </div>
+              <div className="stat-subtitle">
+              KDR
+              </div>
+            </div>
+            <div className="grid-top-ten grid-unit">
+              <div id="top-ten-total" className="stat-total">{this.state.data.top10s}</div>
+              <div id="top-ten-subtitle" className="stat-subtitle">Top 10s</div>
+            </div>
+            <div className="grid-kill-per-game grid-unit">
+              <div id="kill-er-game-total" className="stat-total">{(this.state.data.kills/this.state.data.roundsPlayed).toFixed(1)}</div>
+              <div id="kills-per-game-subtitle" className="stat-subtitle">Kills/Game</div>
+              <div id="kills-per-game-graphic"></div>
+            </div>
+            <div className="grid-headshots grid-unit">
+              <div id="headshots-total" className="stat-total">
+                {this.state.data.headshotKills}
+              </div>
+              <div id="headshots-subtitle" className="stat-subtitle">Headshots</div>
+              <div id="headshot-percent">
+                <span>That's {(((this.state.data.headshotKills)/(this.state.data.kills))*100).toFixed(2)}% of kills from headshots</span>
+              </div>
+            </div>
+            <div className="grid-max-streak grid-unit">
+              <div id="kill-streak-total" className="stat-total">{this.state.data.roundMostKills}</div>
+              <div id="kill-streak-subtitle" className="stat-subtitle">Longest Kill Streak</div>
+              <div id="kill-streak-graphic"></div>
+            </div>
+            <div className="grid-longest-kill grid-unit">
+              <div id="longest-kill-total" className="stat-total">{this.state.data.longestKill.toFixed(1)} m.</div>
+              <div id="longest-kill-subtitle" className="stat-subtitle">Farthest Distance Kill</div>
+              <div id="longest-kill-graphic">
+              <span>That's {(this.state.data.longestKill/109.1).toFixed(1)} football fields.</span>
+              </div>
+            </div>
+            <div className="grid-damage-per-round grid-unit">
+              <div id="avg-damage-total" className="stat-total">{((this.state.data.damageDealt)/(this.state.data.roundsPlayed)).toFixed(1)}</div>
+              <div id="avg-damage-subtitle" className="stat-subtitle">Average Damage / Round</div>
+              <div id="avg-damage-graphic"></div>
+            </div>
+            <div className="grid-time-survived grid-unit">
+              <div id="survived-time-total" className="stat-total">{(((this.state.data.timeSurvived)/(this.state.data.roundsPlayed))/60).toFixed(0)} min</div>
+              <div id="survived-time-subtitle" className="stat-subtitle">Average Survival Time</div>
+
             </div>
           </div>
-          <div className="grid-damage-per-round grid-unit">
-            <div id="avg-damage-total" className="stat-total"></div>
-            <div id="avg-damage-subtitle" className="stat-subtitle">Average Damage / Round</div>
-            <div id="avg-damage-graphic"></div>
-          </div>
-          <div className="grid-time-survived grid-unit">
-            <div id="survived-time-total" className="stat-total"></div>
-            <div id="survived-time-subtitle" className="stat-subtitle">Average Survival Time</div>
-            <div id="survived-time-graphic"></div>
-          </div>
-        </div>
-      </div>
+        </div>}
       </div>
     )
   }
@@ -1402,86 +1469,736 @@ class Stats extends Component{
 class Compare extends Component{
   constructor(){
     super();
+    this.updatePlayerOne = this.updatePlayerOne.bind(this);
+    this.updatePlayerTwo = this.updatePlayerTwo.bind(this);
+    this.getPlayerOne = this.getPlayerOne.bind(this);
+    this.getPlayerTwo = this.getPlayerTwo.bind(this);
+    this.goToPlayerOne = this.goToPlayerOne.bind(this);
+    this.goToPlayerTwo = this.goToPlayerTwo.bind(this);
+    this.selectRegionOne=this.selectRegionOne.bind(this);
+    this.selectRegionTwo=this.selectRegionTwo.bind(this);
+    this.selectSeasonOne=this.selectSeasonOne.bind(this);
+    this.selectSeasonTwo=this.selectSeasonTwo.bind(this);
     this.state={
+      fpp: true,
+      regionOne:"pc-na",
+      regionTwo:"pc-na",
+      playerOneNotFound:false,
+      playerTwoNotFound:false,
+      seasonOne:"division.bro.official.2018-06",
+      seasonTwo:"division.bro.official.2018-06",
+      player1name:"Player One",
       player1:{
-        wins:0,
-        top10s:0,
-        assists:0,
-        dBNOs:0,
-        dailyKills:0,
-        damageDealt:0,
-        days:0,
-        headshotKills:0,
-        heals:0,
-        killPoints:0,
-        kills:0,
-        longestKill:0,
-        longestTimeSurvived:0,
-        losses:0,
-        maxKillStreaks:0,
-        mostSurvivedTime:0,
-        revives:0,
-        rideDistance:0,
-        roadKills:0,
-        roundMostKills:0,
-        roundsPlayed:0,
-        suicides:0,
-        teamKills:0,
-        timeSurvived:0,
-        vehicleDestroys:0,
-        walkDistance:0,
-        weaponsAcquired:0,
-        weeklyKills:0,
-        winPoints:0
+        name:'',
+        data:{
+          attributes:{
+            gameModeStats:{
+              'duo':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'duo-fpp':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'solo':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'solo-fpp':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'squad':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'squad-fpp':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              }
+            }
+          }
+        }
       },
+      player2name:"Player Two",
       player2:{
-        wins:0,
-        top10s:0,
-        assists:0,
-        dBNOs:0,
-        dailyKills:0,
-        damageDealt:0,
-        days:0,
-        headshotKills:0,
-        heals:0,
-        killPoints:0,
-        kills:0,
-        longestKill:0,
-        longestTimeSurvived:0,
-        losses:0,
-        maxKillStreaks:0,
-        mostSurvivedTime:0,
-        revives:0,
-        rideDistance:0,
-        roadKills:0,
-        roundMostKills:0,
-        roundsPlayed:0,
-        suicides:0,
-        teamKills:0,
-        timeSurvived:0,
-        vehicleDestroys:0,
-        walkDistance:0,
-        weaponsAcquired:0,
-        weeklyKills:0,
-        winPoints:0
+        name:'',
+        data:{
+          attributes:{
+            gameModeStats:{
+              'duo':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'duo-fpp':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'solo':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'solo-fpp':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'squad':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              },
+              'squad-fpp':{
+                wins:0,
+                top10s:0,
+                assists:0,
+                dBNOs:0,
+                dailyKills:0,
+                damageDealt:0,
+                days:0,
+                headshotKills:0,
+                heals:0,
+                killPoints:0,
+                kills:0,
+                longestKill:0,
+                longestTimeSurvived:0,
+                losses:0,
+                maxKillStreaks:0,
+                mostSurvivedTime:0,
+                revives:0,
+                rideDistance:0,
+                roadKills:0,
+                roundMostKills:0,
+                roundsPlayed:0,
+                suicides:0,
+                teamKills:0,
+                timeSurvived:0,
+                vehicleDestroys:0,
+                walkDistance:0,
+                weaponsAcquired:0,
+                weeklyKills:0,
+                winPoints:0
+              }
+            }
+          }
+        }
       }
     }
   }
 componentWillReceiveProps(newProps){ //To update state data when api call passes down data.
 
 }
+componentDidMount(){
+  // If url is pushed with the optional parameter filled
+  if(this.props.match.params.name){
+    let compareParam = this.props.match.params.name;
+    console.log(compareParam);
+    let that=this;
+    fetch('/user/?&name='+compareParam+'&region='+this.state.regionOne+'&season='+this.state.season,{
+      method:'get',
+      headers: new Headers({
+        'Content-Type':'application/json'
+      })
+    }).then(res=>res.json()).then(json=>this.setState({player1: json,playerOneNotFound:false})).catch(function(error){console.log(error);that.setState({playerOneNotFound:true})})
+
+  }
+
+}
+selectSeasonOne(event){
+  this.setState({seasonOne: event.target.value});
+}
+selectSeasonTwo(event){
+  this.setState({seasonTwo: event.target.value});
+}
+selectRegionOne(event){
+  this.setState({regionOne: event.target.value})
+}
+selectRegionTwo(event){
+  this.setState({regionTwo: event.target.value})
+}
+goToPlayerOne(e){
+  e.preventDefault();
+  this.props.history.push('/user/'+this.state.player1.name);
+}
+goToPlayerTwo(e){
+  e.preventDefault();
+  this.props.history.push('/user/'+this.state.player2.name);
+}
+updatePlayerOne(event){
+  this.setState({player1name: event.target.value})
+}
+updatePlayerTwo(event){
+  this.setState({player2name: event.target.value})
+}
+getPlayerOne(event){
+  event.preventDefault();
+  let that=this;
+  console.log('searching with name '+this.state.player1name+' region '+this.state.regionOne+' season '+this.state.seasonOne);
+  fetch('/user/?&name='+this.state.player1name+'&region='+this.state.regionOne+'&season='+this.state.seasonOne,{
+    method:'get',
+    headers: new Headers({
+      'Content-Type':'application/json'
+    })
+  }).then(res=>res.json()).then(function(json){
+    if('error' in json){
+      that.setState({playerOneNotFound:true})
+    }
+    else{that.setState({player1: json,playerOneNotFound:false})}
+  }).catch(function(error){console.log(error);that.setState({playerOneNotFound:true})})
+}
+getPlayerTwo(event){
+  event.preventDefault();
+  let that=this;
+  console.log('searching with name '+this.state.player2name+' region '+this.state.regionTwo+' season '+this.state.seasonTwo);
+  fetch('/user/?&name='+this.state.player2name+'&region='+this.state.regionTwo+'&season='+this.state.seasonTwo,{
+    method:'get',
+    headers: new Headers({
+      'Content-Type':'application/json'
+    })
+  }).then(res=>res.json()).then(function(json){
+    if('error' in json){
+      that.setState({playerTwoNotFound:true})
+    }
+    else{that.setState({player2: json,playerTwoNotFound:false})}
+  }).catch(function(error){console.log(error);that.setState({playerTwoNotFound:true})})
+}
   render(){
+
+    // stat calculations
+    let playerOneStats = {};
+    let playerTwoStats = {};
+    let playerOneStatsCompiled = {
+      roundsPlayed: 0,
+      wins: 0,
+      kills: 0,
+      headshotKills: 0,
+      winPoints: 0,
+      walkDistance:0,
+      rideDistance:0,
+      roadKills:0,
+      vehicleDestroys:0,
+      revives:0,
+      longestKill:0,
+      top10s:0,
+      timeSurvived:0,
+      mostTimeSurvived:0,
+      damageDealt:0,
+      assists:0,
+      weaponsAcquired:0,
+      suicides:0,
+      maxKillStreaks:0
+    };
+    for(var each in this.state.player1.data.attributes.gameModeStats){
+      playerOneStatsCompiled.roundsPlayed += this.state.player1.data.attributes.gameModeStats[each].roundsPlayed;
+      playerOneStatsCompiled.wins += this.state.player1.data.attributes.gameModeStats[each].wins;
+      playerOneStatsCompiled.kills += this.state.player1.data.attributes.gameModeStats[each].kills;
+      playerOneStatsCompiled.headshotKills += this.state.player1.data.attributes.gameModeStats[each].headshotKills;
+      playerOneStatsCompiled.winPoints += this.state.player1.data.attributes.gameModeStats[each].winPoints;
+      playerOneStatsCompiled.walkDistance += this.state.player1.data.attributes.gameModeStats[each].walkDistance;
+      playerOneStatsCompiled.rideDistance += this.state.player1.data.attributes.gameModeStats[each].rideDistance;
+      playerOneStatsCompiled.roadKills += this.state.player1.data.attributes.gameModeStats[each].roadKills;
+      playerOneStatsCompiled.vehicleDestroys += this.state.player1.data.attributes.gameModeStats[each].vehicleDestroys;
+      playerOneStatsCompiled.revives += this.state.player1.data.attributes.gameModeStats[each].revives;
+      playerOneStatsCompiled.top10s += this.state.player1.data.attributes.gameModeStats[each].top10s;
+      playerOneStatsCompiled.timeSurvived += this.state.player1.data.attributes.gameModeStats[each].timeSurvived;
+    }
+    let playerTwoStatsCompiled = {
+      roundsPlayed: 0,
+      wins: 0,
+      kills: 0,
+      headshotKills: 0,
+      winPoints: 0,
+      walkDistance:0,
+      rideDistance:0,
+      roadKills:0,
+      vehicleDestroys:0,
+      revives:0,
+      longestKill:0,
+      top10s:0,
+      timeSurvived:0,
+      mostTimeSurvived:0,
+      damageDealt:0,
+      assists:0,
+      weaponsAcquired:0,
+      suicides:0,
+      maxKillStreaks:0
+    };
+    for(var each in this.state.player2.data.attributes.gameModeStats){
+      playerTwoStatsCompiled.roundsPlayed += this.state.player2.data.attributes.gameModeStats[each].roundsPlayed;
+      playerTwoStatsCompiled.wins += this.state.player2.data.attributes.gameModeStats[each].wins;
+      playerTwoStatsCompiled.kills += this.state.player2.data.attributes.gameModeStats[each].kills;
+      playerTwoStatsCompiled.headshotKills += this.state.player2.data.attributes.gameModeStats[each].headshotKills;
+      playerTwoStatsCompiled.winPoints += this.state.player2.data.attributes.gameModeStats[each].winPoints;
+      playerTwoStatsCompiled.walkDistance += this.state.player2.data.attributes.gameModeStats[each].walkDistance;
+      playerTwoStatsCompiled.rideDistance += this.state.player2.data.attributes.gameModeStats[each].rideDistance;
+      playerTwoStatsCompiled.roadKills += this.state.player2.data.attributes.gameModeStats[each].roadKills;
+      playerTwoStatsCompiled.vehicleDestroys += this.state.player2.data.attributes.gameModeStats[each].vehicleDestroys;
+      playerTwoStatsCompiled.revives += this.state.player2.data.attributes.gameModeStats[each].revives;
+      playerTwoStatsCompiled.top10s += this.state.player2.data.attributes.gameModeStats[each].top10s;
+      playerTwoStatsCompiled.timeSurvived += this.state.player2.data.attributes.gameModeStats[each].timeSurvived;
+    }
+    console.log(playerOneStatsCompiled);
+
+    // Chart Data
+    let chartData = {
+      datasets:[{
+        label: 'Percentage of Rounds Won',
+        data:[
+          ((((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)),
+          ((((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1))
+        ],
+        backgroundColor:[
+          'rgb(24, 196, 22)',
+          'rgb(25, 166, 199)'
+        ]
+        }
+        ]
+      }
+
+
     return(
       <div id="compare-page">
 
-        <div id="compare-container">
-          <div id="player1">
+      <div id="compare-header">
+        <div id="compare-header-bg">
+          <div id="compare-nav"></div>
+          <a href="/"><div id="compare-logo">PUBG BOI</div></a>
+        </div>
+        <div id="compare-title">COMPARE</div>
+        <div id="compare-season"></div>
 
+        <div id="compare-search-section">
+          <div id="player1-search" className="player-search">
+            <span>Player One</span>
+            <form action="" className="compare-form">
+              <input type="text" action="submit" className="compare-input" onChange={this.updatePlayerOne} placeholder="Player One" />
+              <select name="" onChange={this.selectSeasonOne} id="compare-season-select1" className="compare-select">
+                <option value="division.bro.official.2018-06" >Season 6</option>
+                <option value="division.bro.official.2018-05" >Season 5</option>
+                <option value="division.bro.official.2018-04" >Season 4</option>
+                <option value="division.bro.official.2018-03" >Season 3</option>
+                <option value="division.bro.official.2018-02" >Season 2</option>
+                <option value="division.bro.official.2018-01" >Season 1</option>
+              </select>
+              <select name="" onChange={this.selectRegionOne} id="compare-region-select1" className="compare-select">
+                <option id="pc-na" value="pc-na" className="list-item region-li" >North America</option>
+                <option id="pc-krjp" value="pc-krjp" className="list-item region-li" >Korea</option>
+                <option id="pc-jp" value="pc-jp" className="list-item region-li" >Japan</option>
+                <option id="pc-eu" value="pc-eu" className="list-item region-li" >Europe</option>
+                <option id="pc-ru" value="pc-ru" className="list-item region-li" >Russia</option>
+                <option id="pc-oc" value="pc-oc" className="list-item region-li" >Oceania</option>
+                <option id="pc-kakao" value="pc-kakao" className="list-item region-li" >Kakao</option>
+                <option id="pc-sea" value="pc-sea" className="list-item region-li">South East Asia</option>
+                <option id="pc-sa" value="pc-sa" className="list-item region-li" >South and Central Americas</option>
+                <option id="pc-as" value="pc-as" className="list-item region-li" >Asia</option>
+              </select>
+              {this.state.player1.name == ""&&<button onClick={this.getPlayerOne} className="compare-button load">LOAD</button>}
+              {this.state.player1.name!=""&&<button onClick={this.getPlayerOne} className="compare-button">REPLACE</button>}
+            </form>
           </div>
-          <div id="player2">
-
+          <div id="player2-search" className="player-search">
+          <span>Player Two</span>
+            <form action="" className="compare-form">
+              <input type="text" action="submit" className="compare-input" onChange={this.updatePlayerTwo} placeholder="Player Two" />
+              <select name="" onChange={this.selectSeasonTwo} id="compare-season-select1" className="compare-select">
+                <option value="division.bro.official.2018-06" >Season 6</option>
+                <option value="division.bro.official.2018-05" >Season 5</option>
+                <option value="division.bro.official.2018-04" >Season 4</option>
+                <option value="division.bro.official.2018-03" >Season 3</option>
+                <option value="division.bro.official.2018-02" >Season 2</option>
+                <option value="division.bro.official.2018-01" >Season 1</option>
+              </select>
+              <select name="" onChange={this.selectRegionTwo} id="compare-region-select1" className="compare-select">
+                <option id="pc-na" value="pc-na" className="list-item region-li" >North America</option>
+                <option id="pc-krjp" value="pc-krjp" className="list-item region-li" >Korea</option>
+                <option id="pc-jp" value="pc-jp" className="list-item region-li" >Japan</option>
+                <option id="pc-eu" value="pc-eu" className="list-item region-li" >Europe</option>
+                <option id="pc-ru" value="pc-ru" className="list-item region-li" >Russia</option>
+                <option id="pc-oc" value="pc-oc" className="list-item region-li" >Oceania</option>
+                <option id="pc-kakao" value="pc-kakao" className="list-item region-li" >Kakao</option>
+                <option id="pc-sea" value="pc-sea" className="list-item region-li">South East Asia</option>
+                <option id="pc-sa" value="pc-sa" className="list-item region-li" >South and Central Americas</option>
+                <option id="pc-as" value="pc-as" className="list-item region-li" >Asia</option>              </select>
+              {this.state.player2.name == ""&&<button onClick={this.getPlayerTwo} className="compare-button load">LOAD</button>}
+              {this.state.player2.name!=""&&<button onClick={this.getPlayerTwo} className="compare-button">REPLACE</button>}
+            </form>
           </div>
         </div>
+      </div>
+
+
+
+      {(this.state.player1.name!=""||this.state.player2.name!="")&&<div id="compare-content">
+        {!<div id="compare-mode-changer">
+          {this.state.fpp && <div>
+            <span className="mode-active">FPP </span><span>| TPP</span>
+          </div>}
+          {!this.state.fpp && <div>
+            <span>FPP |</span><span className="mode-active"> TPP</span>
+          </div>}
+        </div>}
+        <div id="compare-container">
+          {/* Only displays player 1 name if playerOneNotFound is false */}
+          {!this.state.playerOneNotFound ? <div id="player1" className="player-section align-center">
+            <span className="compare-name" onClick={this.goToPlayerOne}>{this.state.player1.name}</span>
+          </div> : <div id="player1">NOT FOUND</div>}
+          <div id="comparison">
+            <div id="versus-title">VS</div>
+
+          </div>
+          {/* Only displays player 1 name if playerOneNotFound is false */}
+          {!this.state.playerTwoNotFound ? <div id="player2" className="player-section">
+            <span className="compare-name" onClick={this.goToPlayerTwo}>{this.state.player2.name}</span>
+          </div>:<div id="player2">NOT FOUND</div>}
+
+
+          {!this.state.playerOneNotFound ? (this.state.player1.name!="" ? <div id="player-one-stats">
+            <div className="rounds-played align-center"><strong>{playerOneStatsCompiled.roundsPlayed}</strong></div>
+            <div className="total-wins align-center">{playerOneStatsCompiled.wins}</div>
+            <div className="total-top10s align-center">{playerOneStatsCompiled.top10s}</div>
+            <div className="align-center total-kills">{playerOneStatsCompiled.kills}</div>
+            <div className="total-headshotKills align-center">{playerOneStatsCompiled.headshotKills}</div>
+            <div className="total-longestKill align-center">{(playerOneStatsCompiled.longestKill)} m</div>
+            <div className="total-winPoints align-center">{(playerOneStatsCompiled.winPoints).toFixed(0)}</div>
+            <div className="total-walkDistance align-center">{((playerOneStatsCompiled.walkDistance)/1000).toFixed(2)} km</div>
+            <div className="total-rideDistance align-right">{((playerOneStatsCompiled.rideDistance)/1000).toFixed(2)} km</div>
+          </div> : <div></div>):<div></div>}
+
+          <div id="stat-compare">
+            <div className="rounds-played align-center">Rounds Played</div>
+            <div className="total-wins align-center">
+              <Doughnut id="win-percent-chart" width={10} height={10} data={chartData} options={{responsive:true,maintainAspectRatio:true}} />
+              Wins
+              <div>{(((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)}% vs {(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1)}%</div>
+            </div>
+            <div className="total-top10s align-center">
+            Top 10 Finishes
+              <div>{(((playerOneStatsCompiled.top10s)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)}% vs {(((playerTwoStatsCompiled.top10s)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1)}%</div>
+            </div>
+            <div className="total-kills align-center">Total Kills</div>
+            <div className="total-headshotKills align-center">
+              Kills by Headshot
+                <div>{(((playerOneStatsCompiled.headshotKills)/(playerOneStatsCompiled.kills))*100).toFixed(1)}% vs {(((playerTwoStatsCompiled.headshotKills)/(playerTwoStatsCompiled.kills))*100).toFixed(1)}%</div>
+            </div>
+            <div className="total-longestKill align-center">Longest Kill</div>
+            <div className="total-winPoints align-center">Win Points</div>
+            <div className="total-walkDistance align-center">Walking Distance</div>
+            <div className="total-rideDistance align-center">Ride Distance</div>
+          </div>
+
+          {!this.state.playerTwoNotFound ? (this.state.player2.name!=""&&<div id="player-two-stats">
+            <div className="rounds-played align-center">{playerTwoStatsCompiled.roundsPlayed}</div>
+            <div className="total-wins align-center">{playerTwoStatsCompiled.wins}</div>
+            <div className="total-top10s align-center">{playerTwoStatsCompiled.top10s}</div>
+            <div className="total-kills align-center">{playerTwoStatsCompiled.kills}</div>
+            <div className="total-headshotKills align-center">{playerTwoStatsCompiled.headshotKills}</div>
+            <div className="total-longestKill align-center">{(playerTwoStatsCompiled.longestKill)} m</div>
+            <div className="total-winPoints align-center">{(playerTwoStatsCompiled.winPoints).toFixed(0)}</div>
+            <div className="total-walkDistance align-center">{((playerTwoStatsCompiled.walkDistance)/1000).toFixed(2)} km</div>
+            <div className="total-rideDistance align-center">{((playerTwoStatsCompiled.rideDistance)/1000).toFixed(2)} km</div>
+          </div>):<div></div>}
+
+        </div>
+
+      </div>}
+
+
       </div>
     )
   }
@@ -1491,8 +2208,8 @@ class Footer extends Component{
   render(){
     return(
       <div id="footer">
-        <div id="credits">
-
+        <div id="copyright">
+          Copyright Jake Miller, 2018
         </div>
       </div>
     )
@@ -1529,5 +2246,13 @@ class NotFound extends Component{
     )
   }
 }
-
+class NoRounds extends Component{
+  render(){
+    return(
+      <div id="no-rounds">
+        <div>No Rounds Played For This Game Mode</div>
+      </div>
+    )
+  }
+}
 export default App;
