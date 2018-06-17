@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
-import {Doughnut} from 'react-chartjs-2';
 
 
 class App extends Component {
@@ -163,7 +162,7 @@ class Home extends Component{
        <div id="leaderboards-header">
          <h2 id="top-players-title">RECENT PLAYERS</h2>
        </div>
-       <div>
+       <div id="recent-players-container">
        {recentPlayers.map((player)=>
          <div key={player} className="recent-player">{player}</div>
        )}
@@ -297,7 +296,7 @@ class User extends Component{
       rank: 0,
       seasonActive:'Season 6',
       search:"",
-      notfound: false,
+      notFound: false,
       loading: true,
       error: false,
       statsActive:true,
@@ -513,6 +512,7 @@ class User extends Component{
 componentDidMount(){
 // This will be the call to app server, which redirects to PUBG API
   console.log('User page mounted.  Fetch next using string: '+this.props.search);
+  this.setState({notFound:false});
   this.region = this.props.region;
   this.userParam = this.props.match.params.name;
   console.log(this.userParam);
@@ -524,7 +524,8 @@ componentDidMount(){
     headers: new Headers({
     'Content-Type': 'application/json'
       }),
-  }).then(response=>response.json()).then(json=>this.setState({player:json,loading:false})).catch(function(error){console.log(error);that.setState({notfound:true,loading:false})});
+  }).then(response=>response.json()).then(function(json){
+    if('error' in json){that.setState({notFound: true})}else{that.setState({player:json,loading:false})}}).catch(function(error){console.log(error);that.setState({notfound:true,loading:false})});
 
 }
 changeSeason(e){
@@ -595,7 +596,7 @@ compareTo(){
               <form action="" id="user-search-form">
                 <input id="user-search-input" type="text" placeholder="PUBG Player Name" value={this.state.search} onChange={this.updateSearch} />
                 <button id="user-search-button" onClick={this.search}>
-                  <i class="fas fa-search fa-2x"></i>
+                  <i className="fas fa-search fa-2x"></i>
                 </button>
               </form>
 
@@ -803,6 +804,9 @@ class Solos extends Component{
         <div id="solos" className="mode">
           <div className="section-header bg-orange">
             <span className="mode-bold">SOLO TPP</span>
+            <div  className="rounds-horiz">
+              <span className="rounds-played">{this.state.data.roundsPlayed}</span> <span>ROUNDS</span>
+            </div>
           </div>
           <Stats data={this.state.data} />
         </div>
@@ -859,6 +863,9 @@ class Duos extends Component{
         <div id="duos" className="mode">
           <div className="section-header bg-green">
             <span className="mode-bold">DUOS TPP</span>
+            <div  className="rounds-horiz">
+              <span className="rounds-played">{this.state.data.roundsPlayed}</span> <span>ROUNDS</span>
+            </div>
           </div>
           <Stats data={this.state.data} />
         </div>
@@ -914,6 +921,9 @@ class Squads extends Component{
         <div id="squads" className="mode">
           <div className="section-header bg-purple">
             <span className="mode-bold">SQUADS TPP</span>
+            <div  className="rounds-horiz">
+              <span className="rounds-played">{this.state.data.roundsPlayed}</span> <span>ROUNDS</span>
+            </div>
           </div>
           <Stats data={this.state.data} />
         </div>
@@ -1394,37 +1404,29 @@ class Stats extends Component{
 
           <div className="stat-grid">
             <div id="wins" className="grid-unit">
-              <div className="stat-total"><i className="fas fa-trophy"></i> {this.state.data.wins}</div>
+              <div className="stat-total"><i className="icon-margin fas fa-trophy"></i> {this.state.data.wins}</div>
               <div className="stat-subtitle">Wins</div>
             </div>
             <div id="top-10" className="grid-unit">
-              <div className="stat-total">{this.state.data.top10s}</div>
+              <div className="stat-total"><i className="icon-margin fas fa-chess-rook"></i> {this.state.data.top10s}</div>
               <div className="stat-subtitle">Top 10s</div>
             </div>
             <div className="grid-win-percent grid-unit">
-              <div className="stat-total">{(((this.state.data.wins)/(this.state.data.roundsPlayed))*100).toFixed(1)}</div>
-              <div className="stat-subtitle">% of Rounds Won</div>
-            </div>
-            <div className="grid-kdr grid-unit">
-              <div className="stat-total">
-               {(this.state.data.kills/(this.state.data.roundsPlayed-this.state.data.wins-this.state.data.suicides)).toFixed(2)}
-              </div>
-              <div className="stat-subtitle">
-              KDR
-              </div>
+              <div className="stat-total">{(((this.state.data.wins)/(this.state.data.roundsPlayed))*100).toFixed(1)}%</div>
+              <div className="stat-subtitle">Win Rate</div>
             </div>
             <div className="grid-top-ten grid-unit">
               <div id="top-ten-total" className="stat-total">{((this.state.data.damageDealt)/(this.state.data.roundsPlayed)).toFixed(0)}</div>
               <div id="top-ten-subtitle" className="stat-subtitle">Avg. Damage Dealt Per Round</div>
             </div>
             <div className="grid-kill-per-game grid-unit">
-              <div id="kill-er-game-total" className="stat-total"><i className="fas fa-church"></i> {(this.state.data.kills/this.state.data.roundsPlayed).toFixed(1)}</div>
+              <div id="kill-er-game-total" className="stat-total"><i className="icon-margin fas fa-church"></i> {(this.state.data.kills/this.state.data.roundsPlayed).toFixed(1)}</div>
               <div id="kills-per-game-subtitle" className="stat-subtitle">Kills/Game</div>
               <div id="kills-per-game-graphic"></div>
             </div>
             <div className="grid-headshots grid-unit">
               <div id="headshots-total" className="stat-total">
-                <i className="far fa-dot-circle"></i> {this.state.data.headshotKills}
+                <i className="icon-margin far fa-dot-circle"></i> {this.state.data.headshotKills}
               </div>
               <div id="headshots-subtitle" className="stat-subtitle">Headshots</div>
               <div id="headshot-percent">
@@ -1432,31 +1434,26 @@ class Stats extends Component{
               </div>
             </div>
             <div className="grid-max-streak grid-unit">
-              <div id="kill-streak-total" className="stat-total">{this.state.data.roundMostKills}</div>
+              <div id="kill-streak-total" className="stat-total"><i className="icon-margin fab fa-pied-piper-alt"></i> {this.state.data.roundMostKills}</div>
               <div id="kill-streak-subtitle" className="stat-subtitle">Longest Kill Streak</div>
               <div id="kill-streak-graphic"></div>
             </div>
             <div className="grid-longest-kill grid-unit">
-              <div id="longest-kill-total" className="stat-total">{this.state.data.longestKill.toFixed(1)} m.</div>
+              <div id="longest-kill-total" className="stat-total"><i className="icon-margin fas fa-crosshairs"></i> {this.state.data.longestKill.toFixed(1)} m.</div>
               <div id="longest-kill-subtitle" className="stat-subtitle">Farthest Distance Kill</div>
               <div id="longest-kill-graphic">
-              <span>That's {(this.state.data.longestKill/109.1).toFixed(1)} football fields.</span>
+              <span>That's {(this.state.data.longestKill/109.1).toFixed(1)} <i className="fas fa-football-ball"></i> fields. </span>
               </div>
             </div>
-            <div className="grid-damage-per-round grid-unit">
-              <div id="avg-damage-total" className="stat-total">{((this.state.data.damageDealt)/(this.state.data.roundsPlayed)).toFixed(1)}</div>
-              <div id="avg-damage-subtitle" className="stat-subtitle">Average Damage / Round</div>
-              <div id="avg-damage-graphic"></div>
-            </div>
             <div className="grid-time-survived grid-unit">
-              <div id="survived-time-total" className="stat-total">{(((this.state.data.timeSurvived)/(this.state.data.roundsPlayed))/60).toFixed(0)} min</div>
+              <div id="survived-time-total" className="stat-total"><i className="icon-margin fas fa-stopwatch"></i> {(((this.state.data.timeSurvived)/(this.state.data.roundsPlayed))/60).toFixed(0)} min</div>
               <div id="survived-time-subtitle" className="stat-subtitle">Average Survival Time</div>
             </div>
             <div className="grid-unit">
               <div id="distance-traveled" className="stat-total">
-                <i className="fab fa-accessible-icon"></i>
-                {((this.state.data.walkDistance+this.state.data.walkDistance)/(this.state.data.roundsPlayed)).toFixed(0)}m</div>
-                <div className="stat-subtitle">Distance Traveled Per Rounds</div>
+                <i className="icon-margin fab fa-accessible-icon not-bold"></i>
+                {((this.state.data.walkDistance+this.state.data.walkDistance)/(this.state.data.roundsPlayed)).toFixed(0)} m.</div>
+                <div className="stat-subtitle">Distance Traveled Per Round</div>
 
             </div>
 
@@ -1891,7 +1888,7 @@ componentDidMount(){
     let compareParam = this.props.match.params.name;
     console.log(compareParam);
     let that=this;
-    fetch('/user/?&name='+compareParam+'&region='+this.state.regionOne+'&season='+this.state.season,{
+    fetch('/user/?&name='+compareParam+'&region='+this.state.regionOne+'&season='+this.state.seasonOne,{
       method:'get',
       headers: new Headers({
         'Content-Type':'application/json'
@@ -2000,6 +1997,7 @@ getPlayerTwo(event){
       playerOneStatsCompiled.revives += this.state.player1.data.attributes.gameModeStats[each].revives;
       playerOneStatsCompiled.top10s += this.state.player1.data.attributes.gameModeStats[each].top10s;
       playerOneStatsCompiled.timeSurvived += this.state.player1.data.attributes.gameModeStats[each].timeSurvived;
+      playerOneStatsCompiled.longestKill += this.state.player1.data.attributes.gameModeStats[each].longestKill;
     }
     let playerTwoStatsCompiled = {
       roundsPlayed: 0,
@@ -2035,25 +2033,57 @@ getPlayerTwo(event){
       playerTwoStatsCompiled.revives += this.state.player2.data.attributes.gameModeStats[each].revives;
       playerTwoStatsCompiled.top10s += this.state.player2.data.attributes.gameModeStats[each].top10s;
       playerTwoStatsCompiled.timeSurvived += this.state.player2.data.attributes.gameModeStats[each].timeSurvived;
+      playerTwoStatsCompiled.longestKill += this.state.player2.data.attributes.gameModeStats[each].longestKill;
     }
-    console.log(playerOneStatsCompiled);
+    console.log(playerTwoStatsCompiled);
 
     // Chart Data
-    let chartData = {
-      datasets:[{
-        label: 'Percentage of Rounds Won',
-        data:[
-          ((((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)),
-          ((((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1))
-        ],
-        backgroundColor:[
-          'rgb(24, 196, 22)',
-          'rgb(25, 166, 199)'
-        ]
-        }
-        ]
-      }
+    // Create relative-width stat bars by adding both player's totals, then dividing the individual player stat by the total. Multiply by 100 to get the percentage of the total, and apply it as the width style with %
+    let dataRounds = [
+      {x:this.state.player1.name,y:playerOneStatsCompiled.roundsPlayed},
+      {x:this.state.player2.name,y:playerTwoStatsCompiled.roundsPlayed}
+    ]
+    let dataLongestKill=[
+      {x:this.state.player1.name,y:playerOneStatsCompiled.longestKill},
+      {x:this.state.player2.name,y:playerTwoStatsCompiled.longestKill}
+    ]
 
+    let longestKillStyleOne={
+      width: ((((playerOneStatsCompiled.longestKill)/(playerOneStatsCompiled.longestKill+playerTwoStatsCompiled.longestKill))*100).toFixed(0))+'%'
+    }
+    let longestKillStyleTwo={
+      width: ((((playerTwoStatsCompiled.longestKill)/(playerOneStatsCompiled.longestKill+playerTwoStatsCompiled.longestKill))*100).toFixed(0))+'%'
+    }
+    let winPointsStyleOne={
+      width: ((((playerOneStatsCompiled.winPoints)/(playerOneStatsCompiled.winPoints+playerTwoStatsCompiled.winPoints))*100).toFixed(0))+'%'
+    }
+    let winPointsStyleTwo={
+      width: ((((playerTwoStatsCompiled.winPoints)/(playerOneStatsCompiled.winPoints+playerTwoStatsCompiled.winPoints))*100).toFixed(0))+'%'
+    }
+    let roundsPlayedStyleOne={
+      width: ((((playerOneStatsCompiled.roundsPlayed)/(playerOneStatsCompiled.roundsPlayed+playerTwoStatsCompiled.roundsPlayed))*100).toFixed(0))+'%'
+    }
+    let roundsPlayedStyleTwo={
+      width: ((((playerTwoStatsCompiled.roundsPlayed)/(playerOneStatsCompiled.roundsPlayed+playerTwoStatsCompiled.roundsPlayed))*100).toFixed(0))+'%'
+    }
+    let winRateStyleOne={
+      width: ((((((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100)/((((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100)+(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100)))*100).toFixed(1))+'%'
+    }
+    let winRateStyleTwo={
+      width: ((((((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100)/((((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100)+(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100)))*100).toFixed(1))+'%'
+    }
+    let walkDistanceStyleOne={
+      width: ((playerOneStatsCompiled.walkDistance/(playerOneStatsCompiled.walkDistance+playerTwoStatsCompiled.walkDistance))*100).toFixed(1)+'%'
+    }
+    let walkDistanceStyleTwo={
+      width: ((playerTwoStatsCompiled.walkDistance/(playerOneStatsCompiled.walkDistance+playerTwoStatsCompiled.walkDistance))*100).toFixed(1)+'%'
+    }
+    let rideDistanceStyleOne={
+      width: ((playerOneStatsCompiled.rideDistance/(playerOneStatsCompiled.rideDistance+playerTwoStatsCompiled.rideDistance))*100).toFixed(1)+'%'
+    }
+    let rideDistanceStyleTwo={
+      width: ((playerTwoStatsCompiled.rideDistance/(playerOneStatsCompiled.rideDistance+playerTwoStatsCompiled.rideDistance))*100).toFixed(1)+'%'
+    }
 
     return(
       <div id="compare-page">
@@ -2068,7 +2098,7 @@ getPlayerTwo(event){
 
         <div id="compare-search-section">
           <div id="player1-search" className="player-search">
-            <span>Player One</span>
+            <span className="player-icons"> <i className="fas fa-user"></i></span>
             <form action="" className="compare-form">
               <input type="text" action="submit" className="compare-input" onChange={this.updatePlayerOne} placeholder="Player One" />
               <select name="" onChange={this.selectSeasonOne} id="compare-season-select1" className="compare-select">
@@ -2096,7 +2126,7 @@ getPlayerTwo(event){
             </form>
           </div>
           <div id="player2-search" className="player-search">
-          <span>Player Two</span>
+          <span className="player-icons"> <i className="fas fa-user"></i> <i className="fas fa-user"></i></span>
             <form action="" className="compare-form">
               <input type="text" action="submit" className="compare-input" onChange={this.updatePlayerTwo} placeholder="Player Two" />
               <select name="" onChange={this.selectSeasonTwo} id="compare-season-select1" className="compare-select">
@@ -2141,31 +2171,41 @@ getPlayerTwo(event){
             {/* Only displays player 1 name if playerOneNotFound is false */}
             {!this.state.playerOneNotFound ? <div id="player1" className="player-section align-center">
               <span className="compare-name" onClick={this.goToPlayerOne}>{this.state.player1.name}</span>
+
             </div> : <div id="player1">NOT FOUND</div>}
-            <div id="comparison">
-              <div id="versus-title">VS</div>
-            </div>
+
             {/* Only displays player 1 name if playerOneNotFound is false */}
             {!this.state.playerTwoNotFound ? <div id="player2" className="player-section">
               <span className="compare-name" onClick={this.goToPlayerTwo}>{this.state.player2.name}</span>
+
             </div>:<div id="player2">NOT FOUND</div>}
           </div>
 
+
+          {(this.state.player1.name!=""&&this.state.player2.name!="")&&<div id="versus-title">VS</div>}
+
+
           {(this.state.player1.name!=""&&this.state.player2.name!="") ?
           <div id="compare-sections">
+
             <div id="compare-rounds-played">
-              <div className="player-one-stat"><strong>{playerOneStatsCompiled.roundsPlayed}</strong></div>
-              <div className="">Rounds Played</div>
-              <div className="player-two-stat">{playerTwoStatsCompiled.roundsPlayed}</div>
+            <span className="compare-stat-titles">ROUNDS PLAYED</span><i className="icon-bg fas fa-table-tennis"></i>
+            <div className="chart-container">
+              <div className="player-one-bar" style={roundsPlayedStyleOne}></div>
+              <span className="chart-bar-subtitle">{(playerOneStatsCompiled.roundsPlayed)}</span>
+
+              <div className="player-two-bar" style={roundsPlayedStyleTwo}></div>
+              <span className="chart-bar-subtitle">{(playerTwoStatsCompiled.roundsPlayed)}</span>
+            </div>
             </div>
             <div id="wins-compare">
-              <div className="total-wins align-center">{playerOneStatsCompiled.wins}</div>
-              <div className="total-wins align-center">
-                <Doughnut id="win-percent-chart" width={10} height={10} data={chartData} options={{responsive:true,maintainAspectRatio:true}} />
-                Wins
-                <div>{(((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)}% vs {(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1)}%</div>
-              </div>
-              <div className="total-wins align-center">{playerTwoStatsCompiled.wins}</div>
+                <span className="compare-stat-titles">WIN RATE</span><i className="fas fa-trophy icon-bg"></i>
+                <div className="chart-container">
+                  <div className="player-one-bar" style={winRateStyleOne}></div>
+                  <span className="chart-bar-subtitle">{(((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)}%</span>
+                  <div className="player-two-bar" style={winRateStyleTwo}></div>
+                  <span className="chart-bar-subtitle">{(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1)}%</span>
+                </div>
             </div>
             <div id="top10s-compare">
               <div className="total-top10s align-center">{playerOneStatsCompiled.top10s}</div>
@@ -2189,30 +2229,50 @@ getPlayerTwo(event){
               <div className="total-headshotKills align-center">{playerTwoStatsCompiled.headshotKills}</div>
             </div>
             <div id="longest-kill-compare">
-              <div className="total-longestKill align-center">{(playerOneStatsCompiled.longestKill)} m</div>
-              <div className="total-longestKill align-center">Longest Kill</div>
-              <div className="total-longestKill align-center">{(playerTwoStatsCompiled.longestKill)} m</div>
+              <span className="compare-stat-titles">LONGEST KILL</span> <i className="fas fa-crosshairs icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={longestKillStyleOne}></div>
+                <span className="chart-bar-subtitle">{(playerOneStatsCompiled.longestKill).toFixed(1)} m</span>
+
+                <div className="player-two-bar" style={longestKillStyleTwo}></div>
+                <span className="chart-bar-subtitle">{(playerTwoStatsCompiled.longestKill).toFixed(1)} m</span>
+              </div>
+
             </div>
             <div id="winpoints-compare">
-              <div className="total-winPoints align-center">{(playerOneStatsCompiled.winPoints).toFixed(0)}</div>
-              <div className="total-winPoints align-center">Win Points</div>
-              <div className="total-winPoints align-center">{(playerTwoStatsCompiled.winPoints).toFixed(0)}</div>
+              <span className="compare-stat-titles">WIN POINTS</span> <i className="far fa-hand-point-right icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={winPointsStyleOne}></div>
+                  <span className="chart-bar-subtitle">{(playerOneStatsCompiled.winPoints).toFixed(0)}</span>
+                  <div className="player-two-bar" style={winPointsStyleTwo}></div>
+                  <span className="chart-bar-subtitle">{(playerTwoStatsCompiled.winPoints).toFixed(0)}</span>
+                </div>
             </div>
+
             <div id="walkdistance-compare">
-              <div className="total-walkDistance align-center">{((playerOneStatsCompiled.walkDistance)/1000).toFixed(2)} km</div>
-              <div className="total-walkDistance align-center">Walking Distance</div>
-              <div className="total-walkDistance align-center">{((playerTwoStatsCompiled.walkDistance)/1000).toFixed(2)} km</div>
+              <span className="compare-stat-titles">DISTANCE ON FOOT</span> <i className="fas fa-walking icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={walkDistanceStyleOne}></div>
+                  <span className="chart-bar-subtitle">{((playerOneStatsCompiled.walkDistance)/1000).toFixed(1)} km</span>
+                  <div className="player-two-bar" style={walkDistanceStyleTwo}></div>
+                  <span className="chart-bar-subtitle">{((playerTwoStatsCompiled.walkDistance)/1000).toFixed(1)} km</span>
+                </div>
             </div>
+
+
             <div id="ridedistance-compare">
-              <div className="total-rideDistance align-right">{((playerOneStatsCompiled.rideDistance)/1000).toFixed(2)} km</div>
-              <div className="total-rideDistance align-center">Ride Distance</div>
-              <div className="total-rideDistance align-center">{((playerTwoStatsCompiled.rideDistance)/1000).toFixed(2)} km</div>
+              <span className="compare-stat-titles">DISTANCE DRIVEN</span> <i className="fas fa-motorcycle icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={rideDistanceStyleOne}></div>
+                  <span className="chart-bar-subtitle">{((playerOneStatsCompiled.rideDistance)/1000).toFixed(1)} km</span>
+                  <div className="player-two-bar" style={rideDistanceStyleTwo}></div>
+                  <span className="chart-bar-subtitle">{((playerTwoStatsCompiled.rideDistance)/1000).toFixed(1)} km</span>
+                </div>
             </div>
+
           </div>:
           <div id="loadem">
-            <i className="arrows fas fa-arrow-up"></i>
-             LOAD 'EM UP
-            <i className="arrows fas fa-arrow-up"></i>
+             LOCK N LOAD
           </div>}
         </div>
       </div>
