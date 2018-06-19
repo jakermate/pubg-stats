@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
-import loading from './img/loading.svg'
+import loading from './loading.svg'
 
 
 class App extends Component {
