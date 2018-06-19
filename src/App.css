@@ -57,7 +57,7 @@ a{
 }
 /* HEADER */
 .App-header {
-  background-image:url('./img/home-bg.jpg');
+  background:url('./img/home-bg.jpg');
   background-position: center;
   background-size:cover;
   max-height: 35rem;
