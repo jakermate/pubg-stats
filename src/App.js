@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import loading from './img/loading.svg'
 
 
 class App extends Component {
@@ -2351,7 +2352,7 @@ class Placeholder extends Component{
   render(){
     return(
       <div id="placeholder">
-        <img id="loading" src={require('./img/loading.svg')} alt=""/>
+        <img id="loading" src={loading} alt=""/>
       </div>
     )
   }
