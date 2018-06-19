@@ -172,7 +172,7 @@ class Home extends Component{
     </section>
 
 
-
+    <Footer />
   </div>
     )
   }
@@ -275,8 +275,8 @@ class Search extends Component{
           </button>
         </form>
         <div id="or-compare"><Link to="/compare/">OR COMPARE TWO PLAYERS</Link></div>
-        <p>Find by PC Username or Xbox Gamertag</p>
-        <span>Currently Following {this.props.recentPlayers.length} Players</span>
+        <p className="text-shadow">Find by PC Username or Xbox Gamertag</p>
+        <span className="text-shadow">Currently Following {this.props.recentPlayers.length} Players</span>
       </div>
     )
   }
@@ -721,6 +721,7 @@ compareTo(){
         </div>
         }
       </div>
+    <Footer />
     </div>
     )
   }
@@ -809,6 +810,7 @@ class Solos extends Component{
             </div>
           </div>
           <Stats data={this.state.data} />
+
         </div>
     )
   }
@@ -868,6 +870,7 @@ class Duos extends Component{
             </div>
           </div>
           <Stats data={this.state.data} />
+
         </div>
     )
   }
@@ -926,6 +929,7 @@ class Squads extends Component{
             </div>
           </div>
           <Stats data={this.state.data} />
+
         </div>
     )
   }
@@ -985,6 +989,7 @@ class Solosfpp extends Component{
             </div>
           </div>
         <Stats data={this.state.data} />
+
         </div>
     )
   }
@@ -1043,6 +1048,7 @@ class Duosfpp extends Component{
             </div>
           </div>
           <Stats data={this.state.data} />
+
         </div>
     )
   }
@@ -1103,6 +1109,7 @@ class Squadsfpp extends Component{
 
           </div>
         <Stats data={this.state.data} />
+
         </div>
     )
   }
@@ -1485,7 +1492,7 @@ class Compare extends Component{
       playerTwoNotFound:false,
       seasonOne:"division.bro.official.2018-06",
       seasonTwo:"division.bro.official.2018-06",
-      player1name:"Player One",
+      player1name:"",
       player1:{
         name:'',
         data:{
@@ -1681,7 +1688,7 @@ class Compare extends Component{
           }
         }
       },
-      player2name:"Player Two",
+      player2name:"",
       player2:{
         name:'',
         data:{
@@ -1893,7 +1900,7 @@ componentDidMount(){
       headers: new Headers({
         'Content-Type':'application/json'
       })
-    }).then(res=>res.json()).then(json=>this.setState({player1: json,playerOneNotFound:false})).catch(function(error){console.log(error);that.setState({playerOneNotFound:true})})
+    }).then(res=>res.json()).then(json=>this.setState({player1: json,player1name:compareParam,playerOneNotFound:false})).catch(function(error){console.log(error);that.setState({playerOneNotFound:true})})
 
   }
 
@@ -2039,14 +2046,6 @@ getPlayerTwo(event){
 
     // Chart Data
     // Create relative-width stat bars by adding both player's totals, then dividing the individual player stat by the total. Multiply by 100 to get the percentage of the total, and apply it as the width style with %
-    let dataRounds = [
-      {x:this.state.player1.name,y:playerOneStatsCompiled.roundsPlayed},
-      {x:this.state.player2.name,y:playerTwoStatsCompiled.roundsPlayed}
-    ]
-    let dataLongestKill=[
-      {x:this.state.player1.name,y:playerOneStatsCompiled.longestKill},
-      {x:this.state.player2.name,y:playerTwoStatsCompiled.longestKill}
-    ]
 
     let longestKillStyleOne={
       width: ((((playerOneStatsCompiled.longestKill)/(playerOneStatsCompiled.longestKill+playerTwoStatsCompiled.longestKill))*100).toFixed(0))+'%'
@@ -2084,7 +2083,24 @@ getPlayerTwo(event){
     let rideDistanceStyleTwo={
       width: ((playerTwoStatsCompiled.rideDistance/(playerOneStatsCompiled.rideDistance+playerTwoStatsCompiled.rideDistance))*100).toFixed(1)+'%'
     }
-
+    let top10StyleOne={
+      width: ((((playerOneStatsCompiled.wins/playerOneStatsCompiled.top10s)*100)/(((playerOneStatsCompiled.wins/playerOneStatsCompiled.top10s)*100)+((playerTwoStatsCompiled.wins/playerTwoStatsCompiled.top10s)*100)))*100)+'%'
+    }
+    let top10StyleTwo={
+      width: ((((playerTwoStatsCompiled.wins/playerTwoStatsCompiled.top10s)*100)/(((playerOneStatsCompiled.wins/playerOneStatsCompiled.top10s)*100)+((playerTwoStatsCompiled.wins/playerTwoStatsCompiled.top10s)*100)))*100)+'%'
+    }
+    let killsPerRoundStyleOne = {
+      width: (((playerOneStatsCompiled.kills/playerOneStatsCompiled.roundsPlayed)/((playerOneStatsCompiled.kills/playerOneStatsCompiled.roundsPlayed)+(playerTwoStatsCompiled.kills/playerTwoStatsCompiled.roundsPlayed)))*100)+'%'
+    }
+    let killsPerRoundStyleTwo = {
+      width: (((playerTwoStatsCompiled.kills/playerTwoStatsCompiled.roundsPlayed)/((playerOneStatsCompiled.kills/playerOneStatsCompiled.roundsPlayed)+(playerTwoStatsCompiled.kills/playerTwoStatsCompiled.roundsPlayed)))*100)+'%'
+    }
+    let headshotStyleOne={
+      width: (((playerOneStatsCompiled.headshotKills/playerOneStatsCompiled.kills)/((playerOneStatsCompiled.headshotKills/playerOneStatsCompiled.kills)+(playerTwoStatsCompiled.headshotKills/playerTwoStatsCompiled.kills)))*100)+'%'
+    }
+    let headshotStyleTwo={
+      width: (((playerTwoStatsCompiled.headshotKills/playerTwoStatsCompiled.kills)/((playerOneStatsCompiled.headshotKills/playerOneStatsCompiled.kills)+(playerTwoStatsCompiled.headshotKills/playerTwoStatsCompiled.kills)))*100)+'%'
+    }
     return(
       <div id="compare-page">
 
@@ -2100,7 +2116,7 @@ getPlayerTwo(event){
           <div id="player1-search" className="player-search">
             <span className="player-icons"> <i className="fas fa-user"></i></span>
             <form action="" className="compare-form">
-              <input type="text" action="submit" className="compare-input" onChange={this.updatePlayerOne} placeholder="Player One" />
+              <input type="text" action="submit" value={this.state.player1name} className="compare-input" onChange={this.updatePlayerOne} placeholder="Player One" />
               <select name="" onChange={this.selectSeasonOne} id="compare-season-select1" className="compare-select">
                 <option value="division.bro.official.2018-06" >Season 6</option>
                 <option value="division.bro.official.2018-05" >Season 5</option>
@@ -2128,7 +2144,7 @@ getPlayerTwo(event){
           <div id="player2-search" className="player-search">
           <span className="player-icons"> <i className="fas fa-user"></i> <i className="fas fa-user"></i></span>
             <form action="" className="compare-form">
-              <input type="text" action="submit" className="compare-input" onChange={this.updatePlayerTwo} placeholder="Player Two" />
+              <input value={this.state.player2name} type="text" action="submit" className="compare-input" onChange={this.updatePlayerTwo} placeholder="Player Two" />
               <select name="" onChange={this.selectSeasonTwo} id="compare-season-select1" className="compare-select">
                 <option value="division.bro.official.2018-06" >Season 6</option>
                 <option value="division.bro.official.2018-05" >Season 5</option>
@@ -2188,17 +2204,17 @@ getPlayerTwo(event){
           {(this.state.player1.name!=""&&this.state.player2.name!="") ?
           <div id="compare-sections">
 
-            <div id="compare-rounds-played">
+            <div id="compare-rounds-played" className="compare-subsection">
             <span className="compare-stat-titles">ROUNDS PLAYED</span><i className="icon-bg fas fa-table-tennis"></i>
-            <div className="chart-container">
-              <div className="player-one-bar" style={roundsPlayedStyleOne}></div>
-              <span className="chart-bar-subtitle">{(playerOneStatsCompiled.roundsPlayed)}</span>
+              <div className="chart-container">
+                <div className="player-one-bar" style={roundsPlayedStyleOne}></div>
+                <span className="chart-bar-subtitle">{(playerOneStatsCompiled.roundsPlayed)}</span>
 
-              <div className="player-two-bar" style={roundsPlayedStyleTwo}></div>
-              <span className="chart-bar-subtitle">{(playerTwoStatsCompiled.roundsPlayed)}</span>
+                <div className="player-two-bar" style={roundsPlayedStyleTwo}></div>
+                <span className="chart-bar-subtitle">{(playerTwoStatsCompiled.roundsPlayed)}</span>
+              </div>
             </div>
-            </div>
-            <div id="wins-compare">
+            <div id="wins-compare" className="compare-subsection">
                 <span className="compare-stat-titles">WIN RATE</span><i className="fas fa-trophy icon-bg"></i>
                 <div className="chart-container">
                   <div className="player-one-bar" style={winRateStyleOne}></div>
@@ -2207,28 +2223,40 @@ getPlayerTwo(event){
                   <span className="chart-bar-subtitle">{(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1)}%</span>
                 </div>
             </div>
-            <div id="top10s-compare">
-              <div className="total-top10s align-center">{playerOneStatsCompiled.top10s}</div>
-              <div className="total-top10s align-center">
-              Top 10 Finishes
-                <div>{(((playerOneStatsCompiled.top10s)/(playerOneStatsCompiled.roundsPlayed))*100).toFixed(1)}% vs {(((playerTwoStatsCompiled.top10s)/(playerTwoStatsCompiled.roundsPlayed))*100).toFixed(1)}%</div>
+
+            <div id="top10s-compare" className="compare-subsection">
+              <span className="compare-stat-titles">FINISHER</span><i className="fas fa-chess-king icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={top10StyleOne}></div>
+                <span className="chart-bar-subtitle">{(((playerOneStatsCompiled.wins)/(playerOneStatsCompiled.top10s))*100).toFixed(1)}% of Top 10 Situations Won</span>
+                <div className="player-two-bar" style={top10StyleTwo}></div>
+                <span className="chart-bar-subtitle">{(((playerTwoStatsCompiled.wins)/(playerTwoStatsCompiled.top10s))*100).toFixed(1)}% of Top 10 Situations Won</span>
               </div>
-              <div className="total-top10s align-center">{playerTwoStatsCompiled.top10s}</div>
+
             </div>
-            <div id="kills-compare">
-              <div className="align-center total-kills">{playerOneStatsCompiled.kills}</div>
-              <div className="total-kills align-center">Total Kills</div>
-              <div className="total-kills align-center">{playerTwoStatsCompiled.kills}</div>
-            </div>
-            <div id="headshots-compare">
-              <div className="total-headshotKills align-center">{playerOneStatsCompiled.headshotKills}</div>
-              <div className="total-headshotKills align-center">
-                Kills by Headshot
-                  <div>{(((playerOneStatsCompiled.headshotKills)/(playerOneStatsCompiled.kills))*100).toFixed(1)}% vs {(((playerTwoStatsCompiled.headshotKills)/(playerTwoStatsCompiled.kills))*100).toFixed(1)}%</div>
+
+            <div id="kills-compare" className="compare-subsection">
+              <span className="compare-stat-titles">KILLS PER ROUND</span><i className="fas fa-skull icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={killsPerRoundStyleOne}></div>
+                <span className="chart-bar-subtitle">{((playerOneStatsCompiled.kills)/(playerOneStatsCompiled.roundsPlayed)).toFixed(1)}</span>
+                <div className="player-two-bar" style={killsPerRoundStyleTwo}></div>
+                <span className="chart-bar-subtitle">{((playerTwoStatsCompiled.kills)/(playerTwoStatsCompiled.roundsPlayed)).toFixed(1)}</span>
               </div>
-              <div className="total-headshotKills align-center">{playerTwoStatsCompiled.headshotKills}</div>
             </div>
-            <div id="longest-kill-compare">
+
+            <div id="headshots-compare" className="compare-subsection">
+              <span className="compare-stat-titles">KILLS BY HEADSHOT</span> <i className="fab fa-pied-piper-hat icon-bg"></i>
+              <div className="chart-container">
+                <div className="player-one-bar" style={headshotStyleOne}></div>
+                <span className="chart-bar-subtitle">{((playerOneStatsCompiled.headshotKills/playerOneStatsCompiled.kills)*100).toFixed(1)} %</span>
+
+                <div className="player-two-bar" style={headshotStyleTwo}></div>
+                <span className="chart-bar-subtitle">{((playerTwoStatsCompiled.headshotKills/playerTwoStatsCompiled.kills)*100).toFixed(1)} %</span>
+              </div>
+            </div>
+
+            <div id="longest-kill-compare" className="compare-subsection">
               <span className="compare-stat-titles">LONGEST KILL</span> <i className="fas fa-crosshairs icon-bg"></i>
               <div className="chart-container">
                 <div className="player-one-bar" style={longestKillStyleOne}></div>
@@ -2239,7 +2267,7 @@ getPlayerTwo(event){
               </div>
 
             </div>
-            <div id="winpoints-compare">
+            <div id="winpoints-compare" className="compare-subsection">
               <span className="compare-stat-titles">WIN POINTS</span> <i className="far fa-hand-point-right icon-bg"></i>
               <div className="chart-container">
                 <div className="player-one-bar" style={winPointsStyleOne}></div>
@@ -2249,7 +2277,7 @@ getPlayerTwo(event){
                 </div>
             </div>
 
-            <div id="walkdistance-compare">
+            <div id="walkdistance-compare" className="compare-subsection">
               <span className="compare-stat-titles">DISTANCE ON FOOT</span> <i className="fas fa-walking icon-bg"></i>
               <div className="chart-container">
                 <div className="player-one-bar" style={walkDistanceStyleOne}></div>
@@ -2260,7 +2288,7 @@ getPlayerTwo(event){
             </div>
 
 
-            <div id="ridedistance-compare">
+            <div id="ridedistance-compare" className="compare-subsection">
               <span className="compare-stat-titles">DISTANCE DRIVEN</span> <i className="fas fa-motorcycle icon-bg"></i>
               <div className="chart-container">
                 <div className="player-one-bar" style={rideDistanceStyleOne}></div>
@@ -2286,8 +2314,23 @@ class Footer extends Component{
   render(){
     return(
       <div id="footer">
-        <div id="copyright">
-          Copyright Jake Miller, 2018
+      <i className="fas fa-broadcast-tower footer-bg"></i>
+        <div id="footer-content">
+          <div id="footer-map">
+            <div id="footer-links">
+              <span>SITE</span>
+              <ul id="footer-list">
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/compare/">Compare</Link></li>
+              </ul>
+            </div>
+            <div id="social-links">
+              <span><i className="fab fa-github"></i></span>
+            </div>
+          </div>
+          <div id="copyright">
+            <span><i className="far fa-copyright"></i> 2018- Jake Miller. All rights reserved.</span>
+          </div>
         </div>
       </div>
     )
@@ -2330,6 +2373,16 @@ class NoRounds extends Component{
       <div className="no-rounds">
         <div>No Rounds Played For This Game Mode</div>
       </div>
+
+    )
+  }
+}
+class NoData extends Component{
+  render(){
+    return(
+      <div></div>
+
+
     )
   }
 }

@@ -9,7 +9,7 @@ html{
   line-height: 1.5;
 }
 body{
-  background:linear-gradient(to bottom,rgb(46, 46, 46),rgb(20, 20, 20));
+  background:rgb(219, 219, 219);
   color:white;
   margin:0;
 
@@ -17,7 +17,15 @@ body{
   width:100%;
   font-family: 'Sunflower',sans-serif;
 }
-
+#root{
+  height:100%
+}
+.App{
+  height:100%
+}
+#router{
+  height:100%
+}
 /* General */
 input:focus{
   background-color:white;
@@ -42,10 +50,14 @@ a{
 .bg-green{
   background-color: rgb(54, 54, 54);
 }
-
+/* HOME */
+#home{
+  background-color:rgb(219, 219, 219);
+  height:100%;
+}
 /* HEADER */
 .App-header {
-  background-image:url('./img/map-bg.jpg');
+  background-image:url('./img/home-bg.jpg');
   background-position: center;
   background-size:cover;
   max-height: 35rem;
@@ -66,6 +78,7 @@ a{
 }
 #header-cover{
   background-color: rgba(62, 117, 117, 0.32);
+
 }
 
 .App-title {
@@ -83,9 +96,9 @@ a{
   display:flex;
   justify-content: space-between;
   border-bottom: 1px solid black;
-  border-top:4px solid hsl(31, 83%, 51%);
 }
 #network{
+  margin-left:.7rem;
   padding:5px;
 }
 .br-tracker{
@@ -246,6 +259,9 @@ h1{
   letter-spacing:.2rem;
 
 }
+.text-shadow{
+  text-shadow: 2px 2px 2px black;
+}
 #placeholder{
   z-index: 400;
   margin-top: 24rem;
@@ -284,10 +300,13 @@ input::placeholder{
 /* HOME LEADERBOARDS */
 #top-players-section{
   position:relative;
-  margin:2rem;
-  top:-3rem;
+  margin:0 auto;
+  box-sizing: border-box;
+  max-width:1100px;
   background-color: rgb(68, 68, 68);
-  border:2px solid black;
+  border-top: 1px solid black;
+  border-left:1px solid black;
+  border-right:1px solid black;
 }
 #leaderboards-header{
   background-color:rgb(79, 79, 79);
@@ -649,6 +668,8 @@ input::placeholder{
   box-sizing: border-box;
   border:1px solid rgb(34, 34, 34);
   margin-bottom:.5rem;
+  position: relative;
+  z-index: 200;
 }
 .section-header{
   color:white;
@@ -666,6 +687,7 @@ input::placeholder{
 .stats-container{
   background-color: rgb(36, 36, 36);
   padding: 1rem;
+
 }
 h4{
   margin:.5rem;
@@ -685,7 +707,8 @@ h4{
 .stat-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  grid-auto-rows: ;
+  position: relative;
+  z-index: 100;
 }
 .grid-kdr{
   grid-row:;
@@ -872,8 +895,10 @@ h4{
 /* COMPARE PAGE */
 #compare-page{
   width:100%;
+  max-width:1100px;
   background:linear-gradient(to bottom,rgb(70, 70, 70),rgb(37, 37, 37));
   min-height:640px;
+  margin:0 auto;
 }
 #compare-header-bg{
   background-image: url('./img/pubg-duo-bg.jpg');
@@ -1090,9 +1115,22 @@ h4{
   position:absolute;
   z-index:4;
   font-size:8rem;
-  color:rgb(77, 77, 77)
+  color:rgb(77, 77, 77);
+  right:1rem;
+  top:2rem
 }
-
+.stat-icon-bg{
+  position:absolute;
+  z-index:4;
+  font-size:20rem;
+  top:10rem;
+  left:10rem;
+  right:;
+  color:rgb(41, 41, 41)
+}
+.compare-subsection{
+  position:relative;
+}
 
 /* Errors */
 #not-found-component{
@@ -1145,6 +1183,47 @@ h4{
   margin-left:.2rem;
   font-weight:bold;
 
+}
+
+/* FOOTER */
+#footer{
+  font-size:1rem;
+  max-width:1100px;
+  margin:0 auto;
+  border: 1px solid black;
+  position:relative;
+  box-sizing: border-box;
+  overflow:hidden;
+  background:linear-gradient(to right,hsl(0, 0%, 18%),hsl(0, 0%, 11%))
+}
+#footer-content{
+  margin:0 auto;
+  padding:2rem;
+  max-width:1100px;
+  position:relative;
+  z-index: 1001;
+  overflow: hidden;
+}
+#footer-map{
+  display:flex;
+  flex-direction:row;
+  justify-content: space-between;
+}
+#social-links{
+  font-size: 3rem;
+}
+#footer-list{
+  flex-direction:column;
+}
+#copyright{
+  margin-top:.7rem;
+
+}
+.footer-bg{
+  position:absolute;
+  font-size:15rem;
+  z-index: 400;
+  color:rgb(47, 47, 47)
 }
 
 /* MEDIA Q */
