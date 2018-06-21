@@ -9,11 +9,9 @@ html{
   line-height: 1.5;
 }
 body{
-  background:rgb(219, 219, 219);
+  background:rgb(0, 0, 0);
   color:white;
   margin:0;
-
-  height:100%;
   width:100%;
   font-family: 'Sunflower',sans-serif;
 }
@@ -21,10 +19,10 @@ body{
   height:100%
 }
 .App{
-  height:100%
+
 }
 #router{
-  height:100%
+
 }
 /* General */
 input:focus{
@@ -52,8 +50,8 @@ a{
 }
 /* HOME */
 #home{
-  background-color:rgb(219, 219, 219);
-  height:100%;
+
+
 }
 /* HEADER */
 .App-header {
@@ -98,7 +96,6 @@ a{
   border-bottom: 1px solid black;
 }
 #network{
-  margin-left:.7rem;
   padding:5px;
 }
 .br-tracker{
@@ -237,16 +234,14 @@ h1{
 
 }
 #search-input{
-  margin-top:1rem;
-  box-sizing: border-box;
-  border: 1px solid rgb(0, 0, 0);
-  background-color:hsl(0, 0%, 100%);
+  border: none;
+  background-color:#fefefe;
   height:100%;
-  padding:1rem 6rem 1rem 2rem;
+  padding:1rem 2rem 1rem 2rem;
   width:80%;
-  font-size: 1rem;
   font-weight:bold;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.64);
+
+  box-sizing: border-box;
 }
 
 #or-compare{
@@ -275,11 +270,14 @@ h1{
 }
 #search-button{
   color:rgb(168, 168, 168);
-  background-color: transparent;
+  background-color: rgb(232, 176, 38);
+  color:white;
+  width:20%;
+  height:100%;
+  padding:1rem;
   border-style: none;
-  position:absolute;
-  right:12%;
-  top:40%;
+  border:none;
+
 }
 #search-container{
   margin: 1rem 0;
@@ -287,9 +285,14 @@ h1{
   color: hsl(139, 100%, 96%)
 }
 #search-form{
+  margin-top:2rem;
+  font-size:1rem;
   position: relative;
   height:100%;
+  width:80%;
   box-sizing: border-box;
+  margin:0 auto;
+  box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.5);
 }
 input::placeholder{
   color:rgb(194, 194, 194)
@@ -321,6 +324,9 @@ input::placeholder{
   margin-left:1rem;
 
 }
+.recent-link{
+  display:block;
+}
 #recent-players-container{
   padding:1rem;
 }
@@ -332,19 +338,58 @@ input::placeholder{
   letter-spacing:.2rem;
 
 }
+/* ABOUT */
+#about-title{
+  background-color:rgb(79, 79, 79);
+  padding:1rem;
+  font-size: 1.5rem;
+  letter-spacing: .2rem;
+  font-weight: bold;
+  color:rgb(232, 176, 38)
+}
+.accent-text{
+  color:rgb(232, 176, 38)
+}
+.question-icon{
+  position:absolute;
+  color:rgb(46, 46, 46);
+  font-size:10rem;
+  z-index:9;
+  left:50%;
 
+}
+#about-section{
+  width:100%;
+  background-color:rgb(57, 57, 57);
+  box-sizing: border-box;
+  border:1px solid black;
+  border-top:2px solid black;
+  overflow: hidden;
+  max-width:1100px;
+  margin:0 auto;
+}
+#about-text{
+  position:relative;
+  z-index: 10;
+}
+#about-content{
+  position:relative;
+  width:100%;
+  padding:2rem;
+  box-sizing: border-box;
+}
 /* USER */
 #user-page{
   box-sizing: border-box;
   background: linear-gradient(to bottom, rgb(50, 50, 50), black);
   width:100%;
-  position: absolute;
+  position: relative;
 
 }
 #user-header{
   min-height:4rem;
   z-index: 900;
-  position:absolute;
+  position:relative;
   left:0;
   right:0;
   top:0;
@@ -450,11 +495,12 @@ input::placeholder{
 #user-content{
   max-width:1100px;
   margin:0 auto;
+  position:relative;
+  margin-top:10rem;
 }
 #user-info{
   border:1px solid black;
   background-color:rgb(54, 54, 54);
-  margin-top:20rem;
   z-index: 10;
   width:100%;
   position:relative;
@@ -1217,7 +1263,7 @@ h4{
 }
 #copyright{
   margin-top:.7rem;
-
+  text-align: center;
 }
 .footer-bg{
   position:absolute;

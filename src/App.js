@@ -83,7 +83,7 @@ updateSearch=(event)=>{
                 <Route component={ErrorPage} />
                 </Switch>
             </div>
-
+          <Footer />
         </div>
       </Router>
     );
@@ -165,15 +165,24 @@ class Home extends Component{
        </div>
        <div id="recent-players-container">
        {recentPlayers.map((player)=>
-         <div key={player} className="recent-player">{player}</div>
+         <Link className="recent-link" to={{pathname: '/user/'+player}} key={player} className="recent-player">{player}</Link>
        )}
        </div>
 
      </div>
     </section>
 
+    <section id="about-section">
+      <div id="about-title">WHAT IS THIS?</div>
+      <div id="about-content">
+      <i className="question-icon far fa-question-circle"></i>
+        <div id="about-text">
+          <span className="accent-text">PUBG BOI</span> is a stat lookup and tracking application for Player Unknown's Battlegrounds.  One of the most popular games in the world of gaming,  PUBG is an intense first-person experience where the smallest decision or slip-up can turn a win into a loss.  The app currently supports all regions for the PC and Xbox versions of the game.  This application is built with the ReactJS library, and utilizes a backend with in-memory caching to reduce the load placed on the third-party API.
+        </div>
+      </div>
+    </section>
 
-    <Footer />
+
   </div>
     )
   }
@@ -270,9 +279,9 @@ class Search extends Component{
       <div id="search-container">
         <div id="search-title">FIND YOUR STATS</div>
         <form id="search-form" action="">
-          <input id="search-input" type="text" placeholder="PUBG Player Name" value={this.props.search} onChange={this.props.updatesearch}></input>
+          <input id="search-input" type="text" placeholder="Search..." value={this.props.search} onChange={this.props.updatesearch}></input>
           <button id="search-button" action="" onClick={this.runSearch}>
-            <i className="fas fa-search fa-2x"></i>
+            <i className="fas fa-search fa-lg"></i>
           </button>
         </form>
         <div id="or-compare"><Link to="/compare/">OR COMPARE TWO PLAYERS</Link></div>
@@ -722,7 +731,7 @@ compareTo(){
         </div>
         }
       </div>
-    <Footer />
+  
     </div>
     )
   }
