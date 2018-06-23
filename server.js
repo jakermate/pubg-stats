@@ -24,12 +24,12 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'/client/build')));
-
-app.use(function(req,res,next){
-  res.header("Access-Control-Allow-Origin","*");
-  res.header("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-  next();
-})
+// cors
+// app.use(function(req,res,next){
+//   res.header("Access-Control-Allow-Origin","*");
+//   res.header("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// })
 // Error handling middleware (works on bad requests)
 app.use(function(err,req,res,next){
   res.send(500, {status:500, message:'Internal Server Error', type:'Internal'});
