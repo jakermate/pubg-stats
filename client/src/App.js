@@ -69,17 +69,17 @@ updateSearch=(event)=>{
 
 
   render() {
-
+const baseUrl= process.env.PUBLIC_URL;
     return (
       <Router>
         <div className="App">
 
             <div id="router">
               <Switch>
-                <Route path="/" exact render={(props)=><Home {...props} xbox={this.state.xbox}  region={this.state.region} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} search={this.state.search} choosePC={this.choosePC} chooseRegion={this.chooseRegion} />} />
-                <Route path="/leaderboards/" component={Leaderboards} />
-                <Route path="/compare/:name?" render={(props)=><Compare {...props}  />} />
-                <Route path="/user/:name" render={(props)=><User {...props} search={this.state.search} region={this.state.region} />} />
+                <Route path={baseUrl + "/"} exact render={(props)=><Home {...props} xbox={this.state.xbox}  region={this.state.region} pc={this.state.pc} chooseXbox={this.chooseXbox} updateSearch={this.updateSearch} runSearch={this.runSearch} search={this.state.search} choosePC={this.choosePC} chooseRegion={this.chooseRegion} />} />
+                <Route path={baseUrl+ "/leaderboards"} component={Leaderboards} />
+                <Route path={baseUrl + "/compare/:name?" } render={(props)=><Compare {...props}  />} />
+                <Route path={baseUrl + "/user/:name"} render={(props)=><User {...props} search={this.state.search} region={this.state.region} />} />
                 <Route component={ErrorPage} />
                 </Switch>
             </div>
