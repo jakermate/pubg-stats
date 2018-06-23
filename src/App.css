@@ -545,7 +545,7 @@ input::placeholder{
 }
 #compare-to{
   position:absolute;
-  top:-1.3rem;
+  top:-.9rem;
   right:1rem;
   font-weight:bold;
   color:yellow;
@@ -1282,6 +1282,16 @@ h4{
 @media (max-width:400px){
   html{
     font-size: 12px;
+  }
+}
+@media(min-width:550px){
+  .compare-name{
+    font-size:5rem;
+  }
+}
+@media (min-width:800px){
+  .compare-name{
+    font-size:6rem;
   }
 }
 @media (min-width:1000px){

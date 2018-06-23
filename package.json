@@ -1,7 +1,8 @@
 {
   "name": "pubg",
   "version": "0.1.0",
-  "main": "server.js",
+  "main": "index.js",
+  "homepage": "http://pubgboi.com",
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.3",

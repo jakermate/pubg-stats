@@ -731,7 +731,7 @@ compareTo(){
         </div>
         }
       </div>
-  
+
     </div>
     )
   }
@@ -1253,6 +1253,11 @@ class MatchStats extends Component{
         backgroundImage: 'url("../img/miramar-bg.jpg")'
       };
     }
+    if (this.state.match.stats.map == "Savage_Main"){
+      var matchStyle={
+        backgroundImage: 'url("../img/sanhok-bg.jpg")'
+      };
+    }
     return(
 
       <div className="match-expanded">
@@ -1262,6 +1267,7 @@ class MatchStats extends Component{
               <span className="game-mode">{this.state.match.stats.mode}</span>
               {(this.state.match.stats.map=="Erangel_Main")&&<p className="map-name">Erangel</p>}
               {(this.state.match.stats.map=="Desert_Main")&&<p className="map-name">Miramar</p>}
+              {(this.state.match.stats.map=="Savage_Main")&&<p className="map-name">Sanhok</p>}
               <div><span className="minutes">{((this.state.match.stats.duration)/60).toFixed(0)} min</span><span id='seconds'> {((this.state.match.stats.duration)%60)} sec</span></div>
             </div>
           </div>
