@@ -6,7 +6,7 @@ const path = require('path');
 const key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjOGM1YjNhMC0zZmY4LTAxMzYtNTZkMC0zMTI2NjQzMDhjNzEiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTI2OTk4NjQ5LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6InB1Ymctc3RhdHMtZTczOGUwOGMtMDRhYi00OTNiLWIwMjItNTZhYzA5ZTZhNTcwIiwic2NvcGUiOiJjb21tdW5pdHkiLCJsaW1pdCI6MjV9.N83L9f6o00ERumw9IQqWJvWocBJA_JCYFQJQtQJc5aA";
 const url = "https://api.playbattlegrounds.com/shards";
 const authorization = "Bearer "+ key;
-// Instantiate an array that stores key/value pairs of searched names.  This will be searched to see if the api call for player ID is redundant.
+// Instantiate an array that stores key/value pairs of searched names.  This will be searched to check if the api call for player ID is redundant.
 const nameCache= {
 
 }
@@ -21,8 +21,9 @@ app.listen(port,function(){
 });
 // Parsing Middleware
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({extended:false}));
-app.use(express.static(path.join(__dirname,'/client/public')));
+// app.use(express.static(path.join(__dirname,'/client/public')));
 
 app.use(function(req,res,next){
   res.header("Access-Control-Allow-Origin","*");
